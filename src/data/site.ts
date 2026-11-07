@@ -132,6 +132,11 @@ export const categoriasMeta: Record<
     icono: 'caja',
     texto: 'Fotografía de productos y catálogos.',
     portadas: [],
+    coverflow: [propia('coverflow-productos', 'rgb(104 104 104)'), propia('coverflow-productos-02', 'rgb(120 120 120)')],
+    tarjeta: propia('tarjeta-productos', 'rgb(168 168 168)', 1200, 1600),
+    banners: {
+      bijouterie: [propia('pase-productos-01', 'rgb(216 216 216)', 1180, 320)],
+    },
   },
 };
 
@@ -149,6 +154,7 @@ export const albumesMeta: Record<string, { titulo: string; descripcion: string }
     titulo: 'Sesión pre bautismo Facu',
     descripcion: 'Parque Independencia, Rosario.',
   },
+  'productos/bijouterie': { titulo: 'Bijouterie', descripcion: '' },
   'sesiones/hermanos-solis': { titulo: 'Hermanos Solís', descripcion: 'Rosedal del Parque Independencia, Rosario.' },
   'sesiones/abi-sesion-exterior': {
     titulo: 'Abi · 15 años',

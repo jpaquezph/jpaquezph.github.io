@@ -47,6 +47,7 @@ const COMPLETOS = new Set([
   'infantiles/cumple-2-anos-bruno',
   'infantiles/sesion-facu',
   'recitales/ensayo-fralumalu',
+  'productos/bijouterie',
 ]);
 
 const orden = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
