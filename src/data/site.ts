@@ -248,7 +248,7 @@ export const cualidades = [
 export const precios = {
   // Cartel de promoción arriba de los precios; dejarlo vacío para no mostrarlo.
   promo: 'Código de descuento: JPHWEB10',
-  nota: 'Cada trabajo se cotiza a medida según fecha, lugar y duración.',
+  nota: 'Cada trabajo se cotiza a medida según tu necesidad.',
   mensajeWhatsapp: 'Hola Jorge, quiero pedir una cotización.',
   // Los precios no se muestran en el sitio: solo proponen el total al cargar un evento en el panel admin.
   planes: [
