@@ -104,7 +104,6 @@ const items = categorias.filter((c) => c.coverflow.length).map((c) => ({
         {
           precios.planes.map((p) => (
             <article class:list={['plan', { 'plan--destacado': p.destacado }]}>
-              {p.destacado && <span class="plan__etiqueta">Más elegido</span>}
               <div>
                 <h3>{p.nombre}</h3>
                 <p class="texto-suave">{p.texto}</p>
