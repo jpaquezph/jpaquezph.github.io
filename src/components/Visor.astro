@@ -13,6 +13,8 @@ import Icon from './Icon.astro';
 </dialog>
 
 <script>
+  import { alDeslizar } from '../lib/deslizar';
+
   const dialogo = document.querySelector<HTMLDialogElement>('[data-visor-dialogo]')!;
   const imagen = dialogo.querySelector('img')!;
   const cuenta = dialogo.querySelector<HTMLElement>('[data-cuenta]')!;
@@ -41,6 +43,7 @@ import Icon from './Icon.astro';
   dialogo.addEventListener('click', (e) => {
     if (e.target === dialogo) dialogo.close();
   });
+  alDeslizar(dialogo, { anterior: () => mostrar(indice - 1), siguiente: () => mostrar(indice + 1) });
   dialogo.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') mostrar(indice - 1);
     if (e.key === 'ArrowRight') mostrar(indice + 1);

@@ -56,6 +56,8 @@ const dos = (n: number) => String(n).padStart(2, '0');
 }
 
 <script>
+  import { alDeslizar } from '../lib/deslizar';
+
   document.querySelectorAll<HTMLElement>('[data-destacado]').forEach((raiz) => {
     const fotos = [...raiz.querySelectorAll<HTMLImageElement>('.destacado__visor img')];
     const minis = [...raiz.querySelectorAll<HTMLButtonElement>('[data-mini]')];
@@ -81,6 +83,7 @@ const dos = (n: number) => String(n).padStart(2, '0');
     raiz.querySelector('[data-ant]')!.addEventListener('click', () => ir(activa - 1));
     raiz.querySelector('[data-sig]')!.addEventListener('click', () => ir(activa + 1));
     minis.forEach((mini) => mini.addEventListener('click', () => ir(Number(mini.dataset.destino))));
+    alDeslizar(raiz.querySelector<HTMLElement>('.destacado__visor')!, { anterior: () => ir(activa - 1), siguiente: () => ir(activa + 1) });
     ir(0);
   });
 </script>

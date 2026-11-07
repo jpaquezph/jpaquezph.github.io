@@ -2951,3 +2951,13 @@ fieldset.con-error > .error {
   color: var(--texto);
   opacity: 0.85;
 }
+
+/* Pases que se pasan deslizando (ver src/lib/deslizar.ts): el gesto de costado
+   pasa la foto; el scroll vertical y el zoom con dos dedos siguen andando. */
+.pase,
+.destacado__visor,
+.visor {
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+}

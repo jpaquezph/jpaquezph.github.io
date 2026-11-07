@@ -50,6 +50,8 @@ const { fotos } = Astro.props;
 }
 
 <script>
+  import { alDeslizar } from '../lib/deslizar';
+
   const INTERVALO = 4500;
 
   document.querySelectorAll<HTMLElement>('[data-pase]').forEach((raiz) => {
@@ -87,6 +89,11 @@ const { fotos } = Astro.props;
     raiz.querySelector('[data-ant]')!.addEventListener('click', () => ir(activa - 1));
     raiz.querySelector('[data-sig]')!.addEventListener('click', () => ir(activa + 1));
     puntos.forEach((punto, i) => punto.addEventListener('click', () => ir(i)));
+    // En el celular se pasa deslizando; el pase automático vuelve a contar desde cero.
+    alDeslizar(raiz, {
+      anterior: () => (ir(activa - 1), andar()),
+      siguiente: () => (ir(activa + 1), andar()),
+    });
     raiz.addEventListener('pointerenter', frenar);
     raiz.addEventListener('pointerleave', andar);
     raiz.addEventListener('focusin', frenar);
