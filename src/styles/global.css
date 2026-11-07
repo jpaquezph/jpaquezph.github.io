@@ -21,6 +21,11 @@
   box-sizing: border-box;
 }
 
+/* Lo oculto queda oculto aunque su clase le dé otro display (formularios, grillas). */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
