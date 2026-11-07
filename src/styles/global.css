@@ -2946,3 +2946,8 @@ fieldset.con-error > .error {
 .respaldo {
   margin-top: 28px;
 }
+
+.lugar__seguro {
+  color: var(--texto);
+  opacity: 0.85;
+}

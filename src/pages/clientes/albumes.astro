@@ -204,7 +204,7 @@ import Base from '../../layouts/Base.astro';
         { class: 'campo' },
         h('label', { for: 'n-fotos' }, 'Fotos'),
         fotos,
-        h('span', { class: 'nota' }, 'Se suben en el orden de sus nombres. Se achican solas a 2000 px del lado más largo.'),
+        h('span', { class: 'nota' }, 'Se suben en el orden de sus nombres. Se achican solas a 2000 px del lado más largo. La tapa del álbum se ve recortada en formato 4:3, tomando el centro.'),
       ),
       h('div', { class: 'acciones' }, h('button', { class: 'btn btn--lleno', type: 'submit' }, 'Crear álbum')),
     );
@@ -337,6 +337,7 @@ import Base from '../../layouts/Base.astro';
     const fotos = h('section', { class: 'tarjeta formulario' },
       h('h2', {}, icono('camara', 22), ` Fotos (${album.fotos.length})`),
       h('div', { class: 'acciones' }, agregar, botonTapa, botonDestacado, botonQuitar, contador),
+      h('p', { class: 'nota' }, 'La tapa se ve en formato 4:3 tomando el centro: en una foto vertical se pierde la parte de arriba y la de abajo.'),
       grilla,
     );
 
@@ -345,6 +346,7 @@ import Base from '../../layouts/Base.astro';
     const seccionPase = h('section', { class: 'tarjeta formulario' },
       h('h2', {}, icono('montana', 22), ' Pase de fotos del álbum'),
       h('p', { class: 'nota' }, `${MEDIDAS.pase.ancho} × ${MEDIDAS.pase.alto} px. Pasan en la página de ${nombreCategoria(cat)}; la primera también es el fondo del encabezado del álbum. Sin fotos propias, la web usa fotos apaisadas del álbum.`),
+      h('p', { class: 'nota lugar__seguro' }, "Celular: se ve solo el centro. Lo importante, entre los 305 y 875 px desde la izquierda (unos 570 px de ancho)." + ' La primera, como fondo del encabezado, en compu se ve solo en una franja central: lo importante, entre los 75 y 245 px de alto.'),
       h('div', { class: 'lugares__grilla' },
         ...pase.map((foto, i) => h('article', { class: 'lugar' },
           h('div', { class: 'lugar__foto', style: `aspect-ratio:${MEDIDAS.pase.ancho}/${MEDIDAS.pase.alto}` }, h('img', { src: srcDe(foto.src), alt: '' })),

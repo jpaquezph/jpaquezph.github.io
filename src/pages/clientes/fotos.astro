@@ -16,6 +16,8 @@ import Base from '../../layouts/Base.astro';
       <p class="aviso" data-mensaje hidden></p>
       <p class="nota" style="margin-bottom:24px">
         Cada foto se recorta sola a la medida indicada, tomando el centro. Para que no se corte nada, subila ya con esa medida.
+        Además, en celular algunas se ven recortadas: debajo de cada una figura qué parte se ve siempre (el área segura), en
+        píxeles de la foto original.
       </p>
       <div data-lugares><p class="nota">Cargando…</p></div>
     </div>
@@ -105,10 +107,12 @@ import Base from '../../layouts/Base.astro';
     medida: { ancho: number; alto: number };
     foto?: Foto;
     detalle?: string;
+    /** Qué parte de la foto se ve siempre (área segura). */
+    seguro?: string;
     alCambiar: () => void;
     alQuitar?: () => void;
   }) {
-    const { titulo, medida, foto, detalle, alCambiar, alQuitar } = opciones;
+    const { titulo, medida, foto, detalle, seguro, alCambiar, alQuitar } = opciones;
     return h(
       'article',
       { class: 'lugar' },
@@ -119,6 +123,7 @@ import Base from '../../layouts/Base.astro';
       ),
       h('strong', {}, titulo),
       h('span', { class: 'nota' }, `${medida.ancho} × ${medida.alto} px`, detalle ? ` · ${detalle}` : ''),
+      seguro && h('span', { class: 'nota lugar__seguro' }, seguro),
       h(
         'div',
         { class: 'acciones' },
@@ -138,12 +143,14 @@ import Base from '../../layouts/Base.astro';
       'Página de inicio',
       tarjeta({
         titulo: 'Banner principal',
+        seguro: "Celular: se ve solo una franja vertical del lado derecho. Lo importante, entre los 1390 y 2050 px desde la izquierda (unos 660 px de ancho), con todo el alto.",
         medida: MEDIDAS.hero,
         foto: portada.hero,
         alCambiar: () => reemplazar({ tipo: 'hero' }, MEDIDAS.hero, 'banner-principal', 'Cambio del banner principal'),
       }),
       tarjeta({
         titulo: 'Foto de Sobre mí',
+        seguro: "En Inicio se ve cuadrada, en compu y en celular: lo importante, entre los 50 y 1250 px de alto.",
         medida: MEDIDAS.sobreMi,
         foto: portada.sobreMi,
         alCambiar: () => reemplazar({ tipo: 'sobreMi' }, MEDIDAS.sobreMi, 'sobre-mi', 'Cambio de la foto de Sobre mí'),
@@ -159,6 +166,7 @@ import Base from '../../layouts/Base.astro';
         const lugar: Lugar = { tipo: 'coverflow', categoria: slug, indice };
         return tarjeta({
           titulo: `Carrusel de inicio ${i + 1}`,
+          seguro: "Se ve entera en compu y en celular. Abajo a la izquierda va el nombre de la categoría: no pongas nada importante ahí.",
           medida: MEDIDAS.coverflow,
           foto,
           detalle: typeof valor === 'string' ? 'foto de un álbum' : undefined,
@@ -169,6 +177,7 @@ import Base from '../../layouts/Base.astro';
       const sueltas = (meta.paseSueltas ?? []).map((foto, i) =>
         tarjeta({
           titulo: `Pase: foto suelta ${i + 1}`,
+          seguro: "Celular: se ve solo el centro. Lo importante, entre los 305 y 875 px desde la izquierda (unos 570 px de ancho).",
           medida: MEDIDAS.pase,
           foto,
           alCambiar: () => reemplazarSuelta(slug, nombre, i),
@@ -183,6 +192,7 @@ import Base from '../../layouts/Base.astro';
         ...carrusel,
         tarjeta({
           titulo: 'Tarjeta en Portfolio',
+          seguro: "Se ve entera en compu y en celular. El tercio de abajo queda debajo del nombre y el texto de la categoría.",
           medida: MEDIDAS.tarjeta,
           foto: meta.tarjeta,
           alCambiar: () => reemplazar({ tipo: 'tarjeta', categoria: slug }, MEDIDAS.tarjeta, `tarjeta-${slug}`, `Cambio de la tarjeta de ${nombre}`),
@@ -190,6 +200,7 @@ import Base from '../../layouts/Base.astro';
         }),
         tarjeta({
           titulo: 'Primera foto del pase',
+          seguro: "Celular: se ve solo el centro. Lo importante, entre los 305 y 875 px desde la izquierda (unos 570 px de ancho).",
           medida: MEDIDAS.pase,
           foto: meta.pase,
           alCambiar: () => reemplazar({ tipo: 'pase', categoria: slug }, MEDIDAS.pase, `pase-${slug}`, `Cambio de la primera foto del pase de ${nombre}`),
@@ -202,6 +213,7 @@ import Base from '../../layouts/Base.astro';
           icono('arriba', 22),
           h('strong', {}, 'Agregar foto suelta al pase'),
           h('span', { class: 'nota' }, `${MEDIDAS.pase.ancho} × ${MEDIDAS.pase.alto} px · lleva a los proyectos`),
+          h('span', { class: 'nota lugar__seguro' }, "Celular: se ve solo el centro. Lo importante, entre los 305 y 875 px desde la izquierda (unos 570 px de ancho)."),
         ),
       );
     });
