@@ -13,7 +13,8 @@ const mostrarTestimonios = false;
 
 const hero = portada.hero;
 const retrato = portada.sobreMi;
-const items = categorias.map((c) => ({
+// Las categorías sin fotos todavía (ej. Productos) no entran al carrusel.
+const items = categorias.filter((c) => c.coverflow.length).map((c) => ({
   titulo: c.nombre,
   texto: c.texto,
   href: url(`portfolio/${c.slug}/`),

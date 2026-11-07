@@ -25,6 +25,7 @@ const trazos: Record<string, string> = {
   musica: '<path d="M9 18V6l10-2v12"/><circle cx="6.500" cy="18" r="2.500"/><circle cx="16.500" cy="16" r="2.500"/>',
   copa: '<path d="M6 4h12l-6 8zM12 12v7.500M8.500 19.500h7"/>',
   retrato: '<circle cx="12" cy="8.800" r="3.600"/><path d="M5 20c.8-3.600 3.600-5.600 7-5.600s6.200 2 7 5.600"/>',
+  caja: '<path d="M3.500 7.500 12 3.500l8.500 4v9L12 20.500l-8.500-4z"/><path d="M3.500 7.500 12 11.500l8.500-4M12 11.500v9"/>',
   montana: '<path d="M2.500 19l6.500-10.500 4 6 2.500-3.500 6 8z"/>',
   candado: '<rect x="5" y="11" width="14" height="9.500" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
   carpeta: '<path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>',

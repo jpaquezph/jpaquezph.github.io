@@ -17,10 +17,12 @@ import { url } from '../../lib/rutas';
     <div class="contenedor categorias">
       {
         categorias.map((c, i) => {
-          const tapa = c.tarjeta;
+          // Sin tarjeta (categoría todavía sin fotos) queda el fondo liso.
+          const tapa = c.tarjeta as typeof c.tarjeta | undefined;
           const cantidad = c.albums.length;
           return (
             <a class="categoria" href={urlCategoria(c)} style={`--orden:${i}`}>
+              {tapa && (
               <img
                 src={url(tapa.thumb)}
                 srcset={`${url(tapa.thumb)} 600w, ${url(tapa.src)} ${tapa.w}w`}
@@ -30,6 +32,7 @@ import { url } from '../../lib/rutas';
                 height={tapa.h}
                 style={`background:${tapa.color}`}
               />
+              )}
               <span class="categoria__rotulo">
                 <Icon nombre={c.icono} tam={30} />
                 <strong>{c.nombre}</strong>

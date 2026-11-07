@@ -127,6 +127,12 @@ export const categoriasMeta: Record<
     },
     paseSueltas: [propia('pase-musica-06', 'rgb(40 24 24)', 1180, 320), propia('pase-musica-07', 'rgb(8 8 24)', 1180, 320)],
   },
+  productos: {
+    nombre: 'Productos',
+    icono: 'caja',
+    texto: 'Fotografía de productos y catálogos.',
+    portadas: [],
+  },
 };
 
 // Nombre y bajada con que se muestra cada proyecto, por "categoria/carpeta" (en slug).
