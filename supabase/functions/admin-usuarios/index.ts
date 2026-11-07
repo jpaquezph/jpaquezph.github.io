@@ -11,7 +11,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 // Sitios desde los que se puede usar el panel. Cuando la web se publique,
 // agregar acá su dirección (p. ej. 'https://jpaquezph.github.io').
-const ORIGENES = ['http://localhost:4321'];
+const ORIGENES = ['https://jpaquezph.github.io', 'http://localhost:4321'];
 // En desarrollo también se acepta la red de la casa (para probar desde el celular).
 const RED_LOCAL = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/;
 

@@ -17,7 +17,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 // Sitios desde los que se puede usar el panel (los mismos que en admin-usuarios).
-const ORIGENES = ['http://localhost:4321'];
+const ORIGENES = ['https://jpaquezph.github.io', 'http://localhost:4321'];
 const RED_LOCAL = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/;
 
 // Qué puede tocar el panel en el repositorio: solo imágenes de public/ y los dos archivos de datos.
