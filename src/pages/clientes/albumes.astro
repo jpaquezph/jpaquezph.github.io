@@ -75,7 +75,8 @@ import Base from '../../layouts/Base.astro';
   }
 
   const srcDe = (ruta: string) => vistaPrevia(ruta) ?? url(ruta);
-  const nombreCategoria = (slug: string) => estado.contenido.categorias[slug]?.nombre ?? slug;
+  const nombreCategoria = (slug: string) =>
+    estado.contenido.categorias[slug]?.nombre ?? estado.galeria.categorias.find((c) => c.slug === slug)?.nombre ?? slug;
   const datosAlbum = (cat: string, slug: string) => estado.contenido.albumes[`${cat}/${slug}`];
   const tituloAlbum = (cat: string, slug: string, nombre: string) => datosAlbum(cat, slug)?.titulo ?? nombre;
 

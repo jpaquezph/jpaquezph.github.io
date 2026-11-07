@@ -2776,7 +2776,7 @@ fieldset.con-error > .error {
 
 .grafico {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
   height: 220px;
 }
@@ -2792,8 +2792,9 @@ fieldset.con-error > .error {
 }
 
 .grafico__svg {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: 220px;
   overflow: visible;
 }
 

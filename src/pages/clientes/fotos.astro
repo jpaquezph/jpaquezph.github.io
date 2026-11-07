@@ -151,7 +151,7 @@ import Base from '../../layouts/Base.astro';
     );
 
     const porCategoria = Object.entries(categorias).map(([slug, meta]) => {
-      const nombre = meta.nombre ?? slug;
+      const nombre = meta.nombre ?? estado.galeria.categorias.find((c) => c.slug === slug)?.nombre ?? slug;
       const carrusel = [0, 1].map((i) => {
         const valor = meta.coverflow?.[i];
         const foto = typeof valor === 'string' ? fotoDeReferencia(slug, valor) : valor;
