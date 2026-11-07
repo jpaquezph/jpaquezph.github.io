@@ -1,5 +1,6 @@
-# Arma la web en cada cambio de la rama main (también los que hace el panel de
-# administración) y, si está habilitado, la publica en GitHub Pages.
+# Arma la web en cada cambio (también los que hace el panel de administración) y,
+# si está habilitado, publica la rama main en GitHub Pages. La rama de prueba
+# prueba-admin-contenido solo se arma, para verificar que no se rompa nada.
 #
 # Para publicar: Settings > Pages > Source: GitHub Actions, y en
 # Settings > Secrets and variables > Actions > Variables crear PUBLICAR = si.
@@ -8,7 +9,7 @@ name: Publicar la web
 
 on:
   push:
-    branches: [main]
+    branches: [main, prueba-admin-contenido]
   workflow_dispatch:
 
 permissions:
@@ -18,7 +19,7 @@ permissions:
 
 # Si llegan varios cambios seguidos, se publica solo el último.
 concurrency:
-  group: publicar
+  group: publicar-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -38,13 +39,13 @@ jobs:
           SITE_URL: https://${{ github.repository_owner }}.github.io
           BASE_PATH: /${{ github.event.repository.name }}
       - uses: actions/upload-pages-artifact@v3
-        if: vars.PUBLICAR == 'si'
+        if: vars.PUBLICAR == 'si' && github.ref == 'refs/heads/main'
         with:
           path: dist
 
   publicar:
     needs: armar
-    if: vars.PUBLICAR == 'si'
+    if: vars.PUBLICAR == 'si' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
