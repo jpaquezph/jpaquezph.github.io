@@ -52,5 +52,10 @@ const tituloCompleto = titulo
       window.addEventListener('scroll', alDesplazar, { passive: true });
       subir.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     </script>
+    <script>
+      // Métricas de visitas (solo páginas públicas de la web publicada).
+      import { registrarVisita } from '../lib/visitas';
+      registrarVisita();
+    </script>
   </body>
 </html>

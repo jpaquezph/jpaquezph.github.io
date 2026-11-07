@@ -1,0 +1,204 @@
+---
+import AdminCabecera from '../../components/AdminCabecera.astro';
+import Base from '../../layouts/Base.astro';
+---
+
+<Base titulo="Métricas" privada>
+  <AdminCabecera
+    titulo="Métricas"
+    texto="Visitas a la web, sin cookies ni datos personales. Tus propias visitas desde este navegador no se cuentan."
+    activo="metricas"
+  />
+
+  <section class="seccion seccion--compacta">
+    <div class="contenedor" data-admin hidden>
+      <p class="aviso" data-mensaje hidden></p>
+      <nav class="pestanas" aria-label="Período" data-periodos>
+        <a href="#7" data-dias="7">7 días</a>
+        <a href="#30" data-dias="30" aria-current="page">30 días</a>
+        <a href="#90" data-dias="90">90 días</a>
+        <a href="#365" data-dias="365">Un año</a>
+      </nav>
+      <div data-metricas><p class="nota">Cargando…</p></div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { exigirAdmin } from '../../lib/admin-sesion';
+  import { h } from '../../lib/dom';
+  import { cliente } from '../../lib/supabase';
+
+  interface Metricas {
+    dias: number;
+    visitas: number;
+    visitantes: number;
+    hoy: number;
+    porDia: { dia: string; visitas: number; visitantes: number }[];
+    paginas: { ruta: string; visitas: number }[];
+    referentes: { referente: string; visitas: number }[];
+    dispositivos: { dispositivo: string; visitas: number }[];
+  }
+
+  const panel = document.querySelector<HTMLElement>('[data-admin]')!;
+  const zona = document.querySelector<HTMLElement>('[data-metricas]')!;
+  const mensaje = document.querySelector<HTMLElement>('[data-mensaje]')!;
+  const numero = new Intl.NumberFormat('es-AR');
+  const fechaCorta = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const fechaLarga = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+
+  // Nombre legible de cada página.
+  function nombrePagina(ruta: string) {
+    if (ruta === '/' || ruta === '') return 'Inicio';
+    const partes = ruta.split('/').filter(Boolean).map((p) => decodeURIComponent(p).replace(/-/g, ' '));
+    const [primera, ...resto] = partes;
+    const base = { portfolio: 'Portfolio', 'sobre mi': 'Sobre mí', contacto: 'Contacto' }[primera] ?? primera;
+    return [base, ...resto.map((p) => p.charAt(0).toUpperCase() + p.slice(1))].join(' › ');
+  }
+  const nombreDispositivo = (d: string) => ({ celular: 'Celular', tablet: 'Tablet', compu: 'Compu' })[d] ?? 'Otro';
+
+  function tile(valor: number, etiqueta: string, nota?: string) {
+    return h('div', { class: 'metrica' }, h('strong', {}, numero.format(valor)), h('span', {}, etiqueta), nota && h('small', { class: 'nota' }, nota));
+  }
+
+  /** Barras por día (una sola serie), con el valor al pasar el mouse o tocar. */
+  function graficoDias(datos: Metricas['porDia']) {
+    const max = Math.max(1, ...datos.map((d) => d.visitas));
+    const tope = Math.ceil(max / 5) * 5 || 5;
+    const ancho = 100 / datos.length;
+    const info = h('p', { class: 'grafico__info nota', 'aria-live': 'polite' }, 'Pasá el mouse o tocá una barra para ver el día.');
+    const svgNs = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNs, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 40');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('class', 'grafico__svg');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', `Visitas por día. Máximo: ${max}.`);
+    for (const linea of [0.5, 1]) {
+      const l = document.createElementNS(svgNs, 'line');
+      l.setAttribute('x1', '0');
+      l.setAttribute('x2', '100');
+      l.setAttribute('y1', String(40 - 40 * linea));
+      l.setAttribute('y2', String(40 - 40 * linea));
+      l.setAttribute('class', 'grafico__guia');
+      svg.append(l);
+    }
+    datos.forEach((d, i) => {
+      const alto = (d.visitas / tope) * 40;
+      const grupo = document.createElementNS(svgNs, 'g');
+      grupo.setAttribute('class', 'grafico__dia');
+      grupo.setAttribute('tabindex', '0');
+      // Zona sensible más grande que la barra.
+      const zonaToque = document.createElementNS(svgNs, 'rect');
+      zonaToque.setAttribute('x', String(i * ancho));
+      zonaToque.setAttribute('y', '0');
+      zonaToque.setAttribute('width', String(ancho));
+      zonaToque.setAttribute('height', '40');
+      zonaToque.setAttribute('fill', 'transparent');
+      const barra = document.createElementNS(svgNs, 'rect');
+      const separacion = Math.min(ancho * 0.2, 0.6);
+      barra.setAttribute('x', String(i * ancho + separacion / 2));
+      barra.setAttribute('y', String(40 - alto));
+      barra.setAttribute('width', String(Math.max(ancho - separacion, 0.2)));
+      barra.setAttribute('height', String(Math.max(alto, d.visitas ? 0.4 : 0)));
+      barra.setAttribute('class', 'grafico__barra');
+      grupo.append(zonaToque, barra);
+      const mostrar = () => {
+        svg.querySelectorAll('.es-activa').forEach((el) => el.classList.remove('es-activa'));
+        grupo.classList.add('es-activa');
+        const dia = fechaLarga.format(new Date(`${d.dia}T00:00:00Z`));
+        info.textContent = `${dia.charAt(0).toUpperCase()}${dia.slice(1)}: ${numero.format(d.visitas)} visitas, ${numero.format(d.visitantes)} visitantes.`;
+      };
+      grupo.addEventListener('mouseenter', mostrar);
+      grupo.addEventListener('focus', mostrar);
+      grupo.addEventListener('click', mostrar);
+      svg.append(grupo);
+    });
+    const primero = datos[0]?.dia;
+    const ultimo = datos.at(-1)?.dia;
+    return h(
+      'section',
+      { class: 'tarjeta' },
+      h('h2', {}, 'Visitas por día'),
+      h('div', { class: 'grafico' },
+        h('div', { class: 'grafico__eje' }, h('span', {}, numero.format(tope)), h('span', {}, numero.format(tope / 2)), h('span', {}, '0')),
+        svg,
+      ),
+      h('div', { class: 'grafico__fechas nota' },
+        h('span', {}, primero ? fechaCorta.format(new Date(`${primero}T00:00:00Z`)) : ''),
+        h('span', {}, ultimo ? fechaCorta.format(new Date(`${ultimo}T00:00:00Z`)) : ''),
+      ),
+      info,
+    );
+  }
+
+  /** Lista con barras horizontales: el valor siempre escrito al lado (no solo el color). */
+  function ranking(titulo: string, filas: { nombre: string; visitas: number }[], vacio: string) {
+    const max = Math.max(1, ...filas.map((f) => f.visitas));
+    return h(
+      'section',
+      { class: 'tarjeta' },
+      h('h2', {}, titulo),
+      filas.length
+        ? h('ol', { class: 'ranking' },
+            ...filas.map((f) =>
+              h('li', {},
+                h('span', { class: 'ranking__nombre' }, f.nombre),
+                h('span', { class: 'ranking__valor' }, numero.format(f.visitas)),
+                h('span', { class: 'ranking__barra', style: `--valor:${(f.visitas / max) * 100}%` }),
+              ),
+            ),
+          )
+        : h('p', { class: 'nota' }, vacio),
+    );
+  }
+
+  function pintar(m: Metricas) {
+    const visitasPorVisitante = m.visitantes ? (m.visitas / m.visitantes).toFixed(1).replace('.', ',') : '0';
+    zona.replaceChildren(
+      h('div', { class: 'metricas' },
+        tile(m.visitas, 'Visitas', `en ${m.dias === 365 ? 'el último año' : `los últimos ${m.dias} días`}`),
+        tile(m.visitantes, 'Visitantes', `${visitasPorVisitante} páginas por visitante`),
+        tile(m.hoy, 'Visitas hoy'),
+      ),
+      graficoDias(m.porDia),
+      h('div', { class: 'tablero' },
+        ranking('Páginas más vistas', m.paginas.map((p) => ({ nombre: nombrePagina(p.ruta), visitas: p.visitas })), 'Todavía no hay visitas.'),
+        h('div', { style: 'display:grid;gap:18px' },
+          ranking('De dónde llegan', m.referentes.map((r) => ({ nombre: r.referente === 'directo' ? 'Directo (escribieron la dirección o un enlace sin origen)' : r.referente, visitas: r.visitas })), 'Todavía no hay visitas.'),
+          ranking('Dispositivo', m.dispositivos.map((d) => ({ nombre: nombreDispositivo(d.dispositivo), visitas: d.visitas })), 'Todavía no hay visitas.'),
+        ),
+      ),
+    );
+  }
+
+  async function cargar(dias: number) {
+    document.querySelectorAll<HTMLElement>('[data-dias]').forEach((a) => {
+      if (Number(a.dataset.dias) === dias) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    const { data, error } = await cliente.rpc('metricas', { dias });
+    if (error) {
+      zona.replaceChildren();
+      mensaje.hidden = false;
+      mensaje.dataset.tipo = 'error';
+      mensaje.textContent = /function|does not exist|schema cache/i.test(error.message)
+        ? 'Las métricas todavía no están instaladas: falta ejecutar supabase/metricas.sql en Supabase.'
+        : `No se pudieron leer las métricas: ${error.message}`;
+      return;
+    }
+    mensaje.hidden = true;
+    pintar(data as Metricas);
+  }
+
+  document.querySelector('[data-periodos]')!.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLElement>('[data-dias]');
+    if (!a) return;
+    e.preventDefault();
+    cargar(Number(a.dataset.dias));
+  });
+
+  exigirAdmin(panel).then((admin) => {
+    if (admin) cargar(30);
+  });
+</script>

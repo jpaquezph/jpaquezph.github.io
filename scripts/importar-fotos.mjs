@@ -22,6 +22,7 @@ const { values } = parseArgs({
   options: {
     origen: { type: 'string', default: path.join(os.homedir(), 'Pictures', 'Web') },
     max: { type: 'string', default: '12' },
+    forzar: { type: 'boolean', default: false },
   },
 });
 
@@ -139,6 +140,14 @@ async function procesarAlbum(dirAlbum, nombre, slugCategoria, archivos) {
   );
   console.log(`  ${nombre}: ${fotos.length} de ${archivos.length} fotos, ${banners.length} de banner`);
   return { slug: slugAlbum, nombre, total: archivos.length, fotos, banners };
+}
+
+if (!values.forzar) {
+  console.error(
+    'Este script borra todas las fotos de los álbumes (también las cargadas desde el panel) y las vuelve a importar.\n' +
+      'Si es lo que querés, corré:  npm run fotos -- --forzar',
+  );
+  process.exit(1);
 }
 
 await fs.rm(DESTINO, { recursive: true, force: true });

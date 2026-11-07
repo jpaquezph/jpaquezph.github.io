@@ -53,7 +53,7 @@ export const menu = [
 // Fotos y textos que se cambian desde el panel de administración (pestañas "Fotos
 // de la web" y "Álbumes"): viven en contenido.json para que el panel pueda editarlos.
 // Las fotos son archivos de public/ (versión grande y chica).
-export type FotoPropia = { src: string; thumb: string; w: number; h: number; color?: string };
+export type FotoPropia = { src: string; thumb: string; w: number; h: number; color: string };
 
 // Datos extra por categoría, según el nombre de la carpeta (en slug).
 // `portadas` son referencias "album:numero-de-foto"; la primera es la principal.

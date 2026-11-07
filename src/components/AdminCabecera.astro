@@ -1,0 +1,53 @@
+---
+// Encabezado común de las páginas del panel de administración, con las pestañas.
+import Icon from './Icon.astro';
+import { url } from '../lib/rutas';
+
+interface Props {
+  titulo: string;
+  texto: string;
+  activo: 'clientes' | 'fotos' | 'albumes' | 'metricas';
+}
+const { titulo, texto, activo } = Astro.props;
+const pestanas = [
+  { id: 'clientes', texto: 'Clientes', icono: 'retrato', ruta: 'clientes/admin/' },
+  { id: 'fotos', texto: 'Fotos de la web', icono: 'camara', ruta: 'clientes/fotos/' },
+  { id: 'albumes', texto: 'Álbumes', icono: 'carpeta', ruta: 'clientes/albumes/' },
+  { id: 'metricas', texto: 'Métricas', icono: 'grafico', ruta: 'clientes/metricas/' },
+];
+---
+
+<section class="portada portada--lisa">
+  <div class="contenedor">
+    <div class="evento__cabecera">
+      <div>
+        <span class="antetitulo antetitulo--color">Administración</span>
+        <h1>{titulo}</h1>
+        <p>{texto}</p>
+      </div>
+      <button class="enlace admin-salir" type="button" data-salir>
+        <Icon nombre="salir" tam={16} /> Cerrar sesión
+      </button>
+    </div>
+    <nav class="pestanas admin-pestanas" aria-label="Secciones del panel">
+      {
+        pestanas.map((p) => (
+          <a href={url(p.ruta)} aria-current={p.id === activo ? 'page' : undefined}>
+            <Icon nombre={p.icono} tam={16} />
+            {p.texto}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</section>
+
+<script>
+  import { portal } from '../lib/portal';
+  import { url } from '../lib/rutas';
+
+  document.querySelector('[data-salir]')?.addEventListener('click', async () => {
+    await portal.salir();
+    location.assign(url('clientes/'));
+  });
+</script>

@@ -1,0 +1,252 @@
+---
+import AdminCabecera from '../../components/AdminCabecera.astro';
+import Base from '../../layouts/Base.astro';
+---
+
+<Base titulo="Fotos de la web" privada>
+  <AdminCabecera
+    titulo="Fotos de la web"
+    texto="Cambiá las fotos fijas de cada parte de la web. Al guardar, la web se vuelve a publicar sola en unos minutos."
+    activo="fotos"
+  />
+
+  <section class="seccion seccion--compacta">
+    <div class="contenedor" data-admin hidden>
+      <p class="aviso aviso--estado" data-publicacion hidden></p>
+      <p class="aviso" data-mensaje hidden></p>
+      <p class="nota" style="margin-bottom:24px">
+        Cada foto se recorta sola a la medida indicada, tomando el centro. Para que no se corte nada, subila ya con esa medida.
+      </p>
+      <div data-lugares><p class="nota">Cargando…</p></div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { guardarCambio, leerEstado, ubicar, vistaPrevia, type Subida } from '../../lib/admin-contenido';
+  import { seguirPublicacion } from '../../lib/admin-publicacion';
+  import { exigirAdmin } from '../../lib/admin-sesion';
+  import {
+    agregarPase,
+    MEDIDAS,
+    quitarLugar,
+    quitarPase,
+    reemplazarLugar,
+    type Estado,
+    type Foto,
+    type Lugar,
+    type Resultado,
+  } from '../../lib/contenido-edicion';
+  import { elegirFotos, h, icono } from '../../lib/dom';
+  import { prepararRecorte } from '../../lib/imagenes';
+  import { url } from '../../lib/rutas';
+
+  const panel = document.querySelector<HTMLElement>('[data-admin]')!;
+  const lugares = document.querySelector<HTMLElement>('[data-lugares]')!;
+  const mensaje = document.querySelector<HTMLElement>('[data-mensaje]')!;
+  const publicacion = document.querySelector<HTMLElement>('[data-publicacion]')!;
+  let estado: Estado;
+  let ocupado = false;
+
+  function avisar(texto: string, tipo: 'info' | 'ok' | 'error' = 'info') {
+    mensaje.hidden = !texto;
+    mensaje.dataset.tipo = tipo;
+    mensaje.textContent = texto;
+  }
+
+  const srcDe = (ruta: string) => vistaPrevia(ruta) ?? url(ruta);
+
+  /** Foto de un álbum por referencia "album:numero" (el carrusel puede usar fotos de álbumes). */
+  function fotoDeReferencia(categoria: string, ref: string): Foto | undefined {
+    const [slugAlbum, numero] = ref.split(':');
+    return estado.galeria.categorias
+      .find((c) => c.slug === categoria)
+      ?.albums.find((a) => a.slug === slugAlbum)?.fotos[Number(numero) - 1];
+  }
+
+  /** Corre un cambio: prepara las fotos, guarda en GitHub y vuelve a pintar. */
+  async function cambiar(descripcion: string, armar: () => Promise<{ resultado: Resultado; subidas: Subida[]; avisos?: string[] }>) {
+    if (ocupado) return;
+    ocupado = true;
+    panel.classList.add('ocupado');
+    try {
+      avisar('Preparando…');
+      const { resultado, subidas, avisos = [] } = await armar();
+      const { commit } = await guardarCambio(resultado, subidas, descripcion, (t) => avisar(t));
+      estado = { contenido: resultado.contenido, galeria: resultado.galeria };
+      pintar();
+      avisar(['Listo: ' + descripcion.charAt(0).toLowerCase() + descripcion.slice(1) + '.', ...avisos].join(' '), avisos.length ? 'info' : 'ok');
+      seguirPublicacion(publicacion, commit);
+    } catch (e) {
+      avisar(e instanceof Error ? e.message : String(e), 'error');
+    } finally {
+      ocupado = false;
+      panel.classList.remove('ocupado');
+    }
+  }
+
+  async function reemplazar(lugar: Lugar, medida: { ancho: number; alto: number; chico: number }, prefijo: string, descripcion: string) {
+    const [archivo] = await elegirFotos();
+    if (!archivo) return;
+    cambiar(descripcion, async () => {
+      const lista = await prepararRecorte(archivo, medida);
+      const { foto, subidas } = ubicar(lista, 'sitio', prefijo);
+      return { resultado: reemplazarLugar(estado, lugar, foto), subidas, avisos: lista.aviso ? [lista.aviso] : [] };
+    });
+  }
+
+  function quitar(lugar: Lugar, descripcion: string) {
+    if (!confirm(`¿${descripcion}? La foto se borra de la web y del repositorio.`)) return;
+    cambiar(descripcion, async () => ({ resultado: quitarLugar(estado, lugar), subidas: [] }));
+  }
+
+  function tarjeta(opciones: {
+    titulo: string;
+    medida: { ancho: number; alto: number };
+    foto?: Foto;
+    detalle?: string;
+    alCambiar: () => void;
+    alQuitar?: () => void;
+  }) {
+    const { titulo, medida, foto, detalle, alCambiar, alQuitar } = opciones;
+    return h(
+      'article',
+      { class: 'lugar' },
+      h(
+        'div',
+        { class: 'lugar__foto', style: `aspect-ratio:${medida.ancho}/${medida.alto}` },
+        foto ? h('img', { src: srcDe(foto.thumb), alt: '', loading: 'lazy' }) : h('span', { class: 'nota' }, 'Sin foto'),
+      ),
+      h('strong', {}, titulo),
+      h('span', { class: 'nota' }, `${medida.ancho} × ${medida.alto} px`, detalle ? ` · ${detalle}` : ''),
+      h(
+        'div',
+        { class: 'acciones' },
+        h('button', { class: 'btn', type: 'button', onclick: alCambiar }, foto ? 'Cambiar' : 'Agregar'),
+        foto && alQuitar && h('button', { class: 'btn btn--peligro', type: 'button', onclick: alQuitar }, 'Quitar'),
+      ),
+    );
+  }
+
+  function bloque(titulo: string, ...tarjetas: HTMLElement[]) {
+    return h('section', { class: 'tarjeta lugares' }, h('h2', {}, titulo), h('div', { class: 'lugares__grilla' }, ...tarjetas));
+  }
+
+  function pintar() {
+    const { portada, categorias } = estado.contenido;
+    const inicio = bloque(
+      'Página de inicio',
+      tarjeta({
+        titulo: 'Banner principal',
+        medida: MEDIDAS.hero,
+        foto: portada.hero,
+        alCambiar: () => reemplazar({ tipo: 'hero' }, MEDIDAS.hero, 'banner-principal', 'Cambio del banner principal'),
+      }),
+      tarjeta({
+        titulo: 'Foto de Sobre mí',
+        medida: MEDIDAS.sobreMi,
+        foto: portada.sobreMi,
+        alCambiar: () => reemplazar({ tipo: 'sobreMi' }, MEDIDAS.sobreMi, 'sobre-mi', 'Cambio de la foto de Sobre mí'),
+      }),
+    );
+
+    const porCategoria = Object.entries(categorias).map(([slug, meta]) => {
+      const nombre = meta.nombre ?? slug;
+      const carrusel = [0, 1].map((i) => {
+        const valor = meta.coverflow?.[i];
+        const foto = typeof valor === 'string' ? fotoDeReferencia(slug, valor) : valor;
+        const indice = Math.min(i, meta.coverflow?.length ?? 0);
+        const lugar: Lugar = { tipo: 'coverflow', categoria: slug, indice };
+        return tarjeta({
+          titulo: `Carrusel de inicio ${i + 1}`,
+          medida: MEDIDAS.coverflow,
+          foto,
+          detalle: typeof valor === 'string' ? 'foto de un álbum' : undefined,
+          alCambiar: () => reemplazar(lugar, MEDIDAS.coverflow, `coverflow-${slug}`, `Cambio de la foto ${i + 1} del carrusel de ${nombre}`),
+          alQuitar: () => quitar({ tipo: 'coverflow', categoria: slug, indice: i }, `Quitar la foto ${i + 1} del carrusel de ${nombre}`),
+        });
+      });
+      const sueltas = (meta.paseSueltas ?? []).map((foto, i) =>
+        tarjeta({
+          titulo: `Pase: foto suelta ${i + 1}`,
+          medida: MEDIDAS.pase,
+          foto,
+          alCambiar: () => reemplazarSuelta(slug, nombre, i),
+          alQuitar: () => {
+            if (!confirm(`¿Quitar la foto suelta ${i + 1} del pase de ${nombre}? Se borra de la web y del repositorio.`)) return;
+            cambiar(`Quitar una foto suelta del pase de ${nombre}`, async () => ({ resultado: quitarPase(estado, slug, '', i), subidas: [] }));
+          },
+        }),
+      );
+      return bloque(
+        nombre,
+        ...carrusel,
+        tarjeta({
+          titulo: 'Tarjeta en Portfolio',
+          medida: MEDIDAS.tarjeta,
+          foto: meta.tarjeta,
+          alCambiar: () => reemplazar({ tipo: 'tarjeta', categoria: slug }, MEDIDAS.tarjeta, `tarjeta-${slug}`, `Cambio de la tarjeta de ${nombre}`),
+          alQuitar: () => quitar({ tipo: 'tarjeta', categoria: slug }, `Quitar la tarjeta de ${nombre}`),
+        }),
+        tarjeta({
+          titulo: 'Primera foto del pase',
+          medida: MEDIDAS.pase,
+          foto: meta.pase,
+          alCambiar: () => reemplazar({ tipo: 'pase', categoria: slug }, MEDIDAS.pase, `pase-${slug}`, `Cambio de la primera foto del pase de ${nombre}`),
+          alQuitar: () => quitar({ tipo: 'pase', categoria: slug }, `Quitar la primera foto del pase de ${nombre}`),
+        }),
+        ...sueltas,
+        h(
+          'button',
+          { class: 'lugar lugar--agregar', type: 'button', onclick: () => agregarSuelta(slug, nombre) },
+          icono('arriba', 22),
+          h('strong', {}, 'Agregar foto suelta al pase'),
+          h('span', { class: 'nota' }, `${MEDIDAS.pase.ancho} × ${MEDIDAS.pase.alto} px · lleva a los proyectos`),
+        ),
+      );
+    });
+
+    lugares.replaceChildren(
+      inicio,
+      ...porCategoria,
+      h('p', { class: 'nota' }, 'Las fotos del pase de cada proyecto se cambian en la pestaña Álbumes.'),
+    );
+  }
+
+  async function agregarSuelta(slug: string, nombre: string) {
+    const [archivo] = await elegirFotos();
+    if (!archivo) return;
+    cambiar(`Nueva foto suelta en el pase de ${nombre}`, async () => {
+      const lista = await prepararRecorte(archivo, MEDIDAS.pase);
+      const { foto, subidas } = ubicar(lista, 'sitio', `pase-${slug}`);
+      return { resultado: agregarPase(estado, slug, '', foto), subidas, avisos: lista.aviso ? [lista.aviso] : [] };
+    });
+  }
+
+  async function reemplazarSuelta(slug: string, nombre: string, indice: number) {
+    const [archivo] = await elegirFotos();
+    if (!archivo) return;
+    cambiar(`Cambio de una foto suelta del pase de ${nombre}`, async () => {
+      const lista = await prepararRecorte(archivo, MEDIDAS.pase);
+      const { foto, subidas } = ubicar(lista, 'sitio', `pase-${slug}`);
+      // Se saca la vieja y se pone la nueva en el mismo lugar.
+      const sinVieja = quitarPase(estado, slug, '', indice);
+      const conNueva = agregarPase(sinVieja, slug, '', foto);
+      const listaSueltas = conNueva.contenido.categorias[slug].paseSueltas!;
+      listaSueltas.splice(indice, 0, listaSueltas.pop()!);
+      return { resultado: { ...conNueva, borrar: sinVieja.borrar }, subidas, avisos: lista.aviso ? [lista.aviso] : [] };
+    });
+  }
+
+  exigirAdmin(panel).then(async (admin) => {
+    if (!admin) return;
+    try {
+      estado = await leerEstado();
+      pintar();
+      seguirPublicacion(publicacion);
+    } catch (e) {
+      lugares.replaceChildren();
+      avisar(e instanceof Error ? e.message : String(e), 'error');
+    }
+  });
+</script>

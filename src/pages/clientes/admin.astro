@@ -1,22 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AdminCabecera from '../../components/AdminCabecera.astro';
 import Icon from '../../components/Icon.astro';
 import { bannerCliente as BANNER, precios } from '../../data/site';
 ---
 
 <Base titulo="Administración" privada>
-  <section class="portada portada--lisa">
-    <div class="contenedor evento__cabecera">
-      <div>
-        <span class="antetitulo antetitulo--color">Administración</span>
-        <h1>Clientes y eventos</h1>
-        <p>Creá el acceso de cada cliente y cargá todo lo de su evento.</p>
-      </div>
-      <button class="enlace" type="button" data-salir style="background:none;border:0;cursor:pointer">
-        <Icon nombre="salir" tam={16} /> Cerrar sesión
-      </button>
-    </div>
-  </section>
+  <AdminCabecera titulo="Clientes y eventos" texto="Creá el acceso de cada cliente y cargá todo lo de su evento." activo="clientes" />
 
   <section class="seccion seccion--compacta">
     <div class="contenedor" data-admin hidden>
@@ -281,6 +271,7 @@ import { bannerCliente as BANNER, precios } from '../../data/site';
   import { leerLineup, portal, type EstadoLineup, type ItemLineup } from '../../lib/portal';
   import { descargarResumen } from '../../lib/resumen-pdf';
   import { url } from '../../lib/rutas';
+  import { exigirAdmin } from '../../lib/admin-sesion';
 
   const panel = document.querySelector<HTMLElement>('[data-admin]')!;
   const $ = <T extends HTMLElement>(selector: string) => panel.querySelector<T>(selector)!;
@@ -799,18 +790,8 @@ import { bannerCliente as BANNER, precios } from '../../data/site';
     );
   });
 
-  document.querySelector('[data-salir]')!.addEventListener('click', async () => {
-    await portal.salir();
-    location.assign(url('clientes/'));
-  });
-
   // Solo el administrador puede ver el panel; el resto vuelve al ingreso.
-  portal
-    .esAdmin()
-    .then(async (admin) => {
-      if (!admin) return location.replace(url('clientes/'));
-      panel.hidden = false;
-      await ejecutar(mostrarLista, mensaje);
-    })
-    .catch(() => location.replace(url('clientes/')));
+  exigirAdmin(panel).then((admin) => {
+    if (admin) ejecutar(mostrarLista, mensaje);
+  });
 </script>

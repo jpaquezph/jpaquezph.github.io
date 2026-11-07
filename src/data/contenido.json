@@ -4,14 +4,16 @@
       "src": "banner-principal.webp",
       "thumb": "banner-principal-m.webp",
       "w": 2400,
-      "h": 1350
+      "h": 1350,
+      "color": "rgb(40 40 40)"
     },
     "heroFocoCelular": "80% 22%",
     "sobreMi": {
       "src": "sobre-mi.webp",
       "thumb": "sobre-mi-m.webp",
       "w": 1200,
-      "h": 1600
+      "h": 1600,
+      "color": "rgb(8 8 24)"
     }
   },
   "destacado": {

@@ -46,7 +46,7 @@ type CategoriaImportada = Omit<
   Categoria,
   'icono' | 'texto' | 'portadas' | 'coverflow' | 'tarjeta' | 'pase' | 'paseSueltas'
 >;
-const importadas = datos.categorias as CategoriaImportada[];
+const importadas = datos.categorias as unknown as CategoriaImportada[];
 // Categorías cargadas en `categoriasMeta` que todavía no tienen carpeta de fotos.
 const sinFotos: CategoriaImportada[] = Object.entries(categoriasMeta)
   .filter(([slug]) => !importadas.some((c) => c.slug === slug))
