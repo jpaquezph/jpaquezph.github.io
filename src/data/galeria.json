@@ -2907,15 +2907,8 @@
         {
           "slug": "bijouterie",
           "nombre": "Bijouterie",
-          "total": 11,
+          "total": 10,
           "fotos": [
-            {
-              "src": "fotos/productos/bijouterie/01.webp",
-              "thumb": "fotos/productos/bijouterie/01-m.webp",
-              "w": 1333,
-              "h": 2000,
-              "color": "rgb(8 8 8)"
-            },
             {
               "src": "fotos/productos/bijouterie/02.webp",
               "thumb": "fotos/productos/bijouterie/02-m.webp",
