@@ -99,7 +99,6 @@ Deno.serve(async (pedido) => {
   const repo = Deno.env.get('GH_REPO');
   const rama = Deno.env.get('GH_RAMA') || 'main';
   if (!url || !claveServicio) return responder({ error: 'La función no tiene configurada la clave de servicio.' }, 500);
-  if (!token || !repo) return responder({ error: 'Falta configurar GH_TOKEN y GH_REPO en los secretos de la función.' }, 500);
   const admin = createClient(url, claveServicio, { auth: { persistSession: false } });
 
   // Quién llama: se valida su sesión y que figure en la tabla de administradores.
@@ -110,6 +109,8 @@ Deno.serve(async (pedido) => {
   const { data: fila } = await admin.from('admins').select('user_id').eq('user_id', quien.user.id).maybeSingle();
   if (!fila) return responder({ error: 'No autorizado.' }, 403);
   const actor = quien.user.id;
+  // Recién con el administrador identificado se informa si falta configurar GitHub.
+  if (!token || !repo) return responder({ error: 'Falta configurar GH_TOKEN y GH_REPO en los secretos de la función.' }, 500);
 
   let cuerpo: Record<string, unknown>;
   try {
