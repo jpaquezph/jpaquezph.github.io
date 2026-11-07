@@ -59,7 +59,7 @@
       },
       "pase": {
         "src": "pase-infantiles.webp",
-        "thumb": "pase-infantiles-m.webp",
+        "thumb": "pase-infantiles.webp",
         "w": 1180,
         "h": 320,
         "color": "rgb(72 72 56)"
@@ -97,7 +97,7 @@
       },
       "pase": {
         "src": "pase-sesiones.webp",
-        "thumb": "pase-sesiones-m.webp",
+        "thumb": "pase-sesiones.webp",
         "w": 1180,
         "h": 320,
         "color": "rgb(216 216 216)"
@@ -135,7 +135,7 @@
       },
       "pase": {
         "src": "pase-eventos.webp",
-        "thumb": "pase-eventos-m.webp",
+        "thumb": "pase-eventos.webp",
         "w": 1180,
         "h": 320,
         "color": "rgb(8 8 8)"
@@ -174,7 +174,7 @@
       },
       "pase": {
         "src": "pase-musica.webp",
-        "thumb": "pase-musica-m.webp",
+        "thumb": "pase-musica.webp",
         "w": 1180,
         "h": 320,
         "color": "rgb(56 40 24)"
@@ -183,14 +183,14 @@
         "ateneo-cultural": [
           {
             "src": "pase-musica-02.webp",
-            "thumb": "pase-musica-02-m.webp",
+            "thumb": "pase-musica-02.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(24 8 40)"
           },
           {
             "src": "pase-musica-08.webp",
-            "thumb": "pase-musica-08-m.webp",
+            "thumb": "pase-musica-08.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(24 8 24)"
@@ -199,21 +199,21 @@
         "destino-casual-teatro-vorterix": [
           {
             "src": "pase-musica-03.webp",
-            "thumb": "pase-musica-03-m.webp",
+            "thumb": "pase-musica-03.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(8 8 8)"
           },
           {
             "src": "pase-musica-04.webp",
-            "thumb": "pase-musica-04-m.webp",
+            "thumb": "pase-musica-04.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(8 8 200)"
           },
           {
             "src": "pase-musica-05.webp",
-            "thumb": "pase-musica-05-m.webp",
+            "thumb": "pase-musica-05.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(24 8 8)"
@@ -222,7 +222,7 @@
         "ensayo-fralumalu": [
           {
             "src": "pase-musica-09.webp",
-            "thumb": "pase-musica-09-m.webp",
+            "thumb": "pase-musica-09.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(24 40 56)"
@@ -232,14 +232,14 @@
       "paseSueltas": [
         {
           "src": "pase-musica-06.webp",
-          "thumb": "pase-musica-06-m.webp",
+          "thumb": "pase-musica-06.webp",
           "w": 1180,
           "h": 320,
           "color": "rgb(40 24 24)"
         },
         {
           "src": "pase-musica-07.webp",
-          "thumb": "pase-musica-07-m.webp",
+          "thumb": "pase-musica-07.webp",
           "w": 1180,
           "h": 320,
           "color": "rgb(8 8 24)"
@@ -278,7 +278,7 @@
         "bijouterie": [
           {
             "src": "pase-productos-01.webp",
-            "thumb": "pase-productos-01-m.webp",
+            "thumb": "pase-productos-01.webp",
             "w": 1180,
             "h": 320,
             "color": "rgb(216 216 216)"

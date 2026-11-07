@@ -54,7 +54,7 @@ create policy "El admin gestiona archivos" on storage.objects
 -- Cambiar el mail si el usuario administrador se creó con otro.
 
 insert into public.admins (user_id)
-select id from auth.users where email = 'jpaquezph.clientes+admin@gmail.com'
+select id from auth.users where email = 'jpaquezph.clientes+jpaquez@gmail.com'
 on conflict do nothing;
 
 -- Tiene que devolver una fila con el mail del administrador.
