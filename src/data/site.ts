@@ -260,10 +260,10 @@ export const precios = {
       destacado: false,
     },
     {
-      nombre: 'Evento',
+      nombre: 'Productos',
       precio: 180000,
-      texto: 'Cumpleaños, recitales y fiestas.',
-      incluye: ['Cobertura integral, sin límite de horario', 'Entrega digital', 'Hasta 3 locaciones'],
+      texto: 'Fotografía de productos y catálogos.',
+      incluye: ['Estudio o en locación', 'Presupuesto por productos', 'Entrega digital'],
       destacado: false,
     },
     {
