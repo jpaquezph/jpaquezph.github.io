@@ -257,14 +257,14 @@ export const precios = {
       precio: 65000,
       texto: 'Retratos, 15 años, embarazo o familia.',
       incluye: ['Rosario y alrededores', 'Entrega digital', 'Sesiones desde 1 hora'],
-      destacado: false,
+      destacado: true,
     },
     {
       nombre: 'Productos',
       precio: 180000,
       texto: 'Fotografía de productos y catálogos.',
       incluye: ['Estudio o en locación', 'Presupuesto por productos', 'Entrega digital'],
-      destacado: false,
+      destacado: true,
     },
     {
       nombre: 'Evento completo',
