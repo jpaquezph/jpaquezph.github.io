@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { portada } from '../../data/site';
+import { url } from '../../lib/rutas';
+
+const fondo = portada.hero;
+---
+
+<Base titulo="Galerías clientes" privada>
+  <section class="acceso banda" style="border-top:0">
+    <img class="banda__foto" src={url(fondo.thumb)} alt="" width={fondo.w} height={fondo.h} />
+    <div class="acceso__caja">
+      <span class="antetitulo antetitulo--color">Área privada</span>
+      <h1>Galerías clientes</h1>
+      <p>Ingresá con el usuario y la contraseña que te envié al firmar el contrato.</p>
+      <form class="formulario" data-acceso>
+        <div class="campo">
+          <label for="usuario">Usuario</label>
+          <input id="usuario" name="usuario" autocomplete="username" autocapitalize="none" required />
+        </div>
+        <div class="campo">
+          <label for="clave">Contraseña</label>
+          <input id="clave" name="clave" type="password" autocomplete="current-password" required />
+        </div>
+        <p class="error" role="alert" data-error></p>
+        <button class="btn btn--lleno" type="submit"><Icon nombre="candado" tam={16} /> Ingresar</button>
+        <p class="aviso" data-demo hidden>
+          Modo demostración: usuario <code data-demo-usuario></code>, contraseña <code data-demo-clave></code>.
+        </p>
+        <p class="nota">¿No tenés tus datos o no podés entrar? Escribime y te los reenvío.</p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { DEMO, esDemo, portal } from '../../lib/portal';
+  import { url } from '../../lib/rutas';
+
+  const formulario = document.querySelector<HTMLFormElement>('[data-acceso]')!;
+  const error = formulario.querySelector<HTMLElement>('[data-error]')!;
+  const boton = formulario.querySelector<HTMLButtonElement>('button[type=submit]')!;
+  // El administrador va a su panel; los clientes, a la página de su evento.
+  const destino = async () => url((await portal.esAdmin()) ? 'clientes/admin/' : 'clientes/evento/');
+
+  if (esDemo) {
+    formulario.querySelector<HTMLElement>('[data-demo-usuario]')!.textContent = DEMO.usuario;
+    formulario.querySelector<HTMLElement>('[data-demo-clave]')!.textContent = DEMO.clave;
+    formulario.querySelector<HTMLElement>('[data-demo]')!.hidden = false;
+  }
+
+  // Con sesión abierta se entra directo al evento.
+  portal
+    .sesion()
+    .then(async (abierta) => {
+      if (abierta) location.replace(await destino());
+    })
+    .catch(() => {});
+
+  formulario.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const datos = new FormData(formulario);
+    error.textContent = '';
+    boton.disabled = true;
+    try {
+      const ok = await portal.ingresar(String(datos.get('usuario')), String(datos.get('clave')));
+      if (ok) {
+        location.assign(await destino());
+        return;
+      }
+      error.textContent = 'Usuario o contraseña incorrectos.';
+    } catch {
+      error.textContent = 'No se pudo iniciar sesión. Probá de nuevo en unos minutos.';
+    }
+    boton.disabled = false;
+  });
+</script>

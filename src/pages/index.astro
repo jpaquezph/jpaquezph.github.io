@@ -1,0 +1,157 @@
+---
+import Base from '../layouts/Base.astro';
+import Coverflow from '../components/Coverflow.astro';
+import Destacado from '../components/Destacado.astro';
+import Icon from '../components/Icon.astro';
+import Llamado from '../components/Llamado.astro';
+import { cualidades, portada, precios, sitio, sobreMi, testimonios } from '../data/site';
+import { categorias } from '../lib/galeria';
+import { url, urlWhatsapp } from '../lib/rutas';
+
+// Oculta por ahora: volver a true cuando haya más reseñas.
+const mostrarTestimonios = false;
+
+const hero = portada.hero;
+const retrato = portada.sobreMi;
+const items = categorias.map((c) => ({
+  titulo: c.nombre,
+  texto: c.texto,
+  href: url(`portfolio/${c.slug}/`),
+  icono: c.icono,
+  fotos: c.coverflow,
+}));
+---
+
+<Base activo="">
+  <section class="hero">
+    <img
+      class="hero__foto"
+      src={url(hero.src)}
+      srcset={`${url(hero.thumb)} 1000w, ${url(hero.src)} ${hero.w}w`}
+      sizes="100vw"
+      alt=""
+      width={hero.w}
+      height={hero.h}
+      fetchpriority="high"
+      style={`--foco-celular:${portada.heroFocoCelular}`}
+    />
+    <div class="contenedor">
+      <span class="antetitulo">Momentos reales<br />Historias únicas</span>
+      <h1>
+        <span>Fotografía de</span>
+        <span class="degrade">Eventos</span>
+      </h1>
+      <p>Capturo la energía, las emociones y los detalles que hacen único cada evento.</p>
+      <a class="btn btn--lleno" href={url('portfolio/')}>Ver portfolio <Icon nombre="flecha" tam={16} /></a>
+    </div>
+    <span class="hero__scroll" aria-hidden="true">SCROLL</span>
+  </section>
+
+  <section class="seccion seccion--compacta">
+    <div class="contenedor cabecera-seccion">
+      <div>
+        <span class="antetitulo">Explorá por categoría</span>
+        <h2 class="titulo">Cada evento, una historia</h2>
+      </div>
+      <a class="enlace" href={url('portfolio/')}>Ver todo el portfolio <Icon nombre="flecha" tam={15} /></a>
+    </div>
+    <Coverflow items={items} />
+  </section>
+
+  <section class="seccion seccion--compacta seccion--borde">
+    <div class="contenedor sobre">
+      <img class="sobre__foto" src={url(retrato.thumb)} alt={sitio.nombre} width={retrato.w} height={retrato.h} loading="lazy" />
+      <div>
+        <span class="antetitulo antetitulo--color">Sobre mí</span>
+        <h2>Hola, soy {sitio.nombre}</h2>
+        {sobreMi.resumen.map((parrafo) => <p>{parrafo}</p>)}
+        <a class="btn" href={url('sobre-mi/')}>Conocer más <Icon nombre="flecha" tam={16} /></a>
+      </div>
+      <ul class="cualidades">
+        {
+          cualidades.map((c) => (
+            <li>
+              <Icon nombre={c.icono} tam={30} />
+              <div>
+                <strong>{c.titulo}</strong>
+                <span>{c.texto}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="seccion seccion--compacta seccion--borde">
+    <div class="contenedor">
+      <Destacado />
+    </div>
+  </section>
+
+  <section class="seccion seccion--compacta seccion--borde" id="precios">
+    <div class="contenedor">
+      <div class="cabecera-seccion">
+        <div>
+          <span class="antetitulo">Servicios</span>
+          <h2 class="titulo">Elegí cómo trabajamos</h2>
+          {precios.promo && <span class="promo">{precios.promo}</span>}
+        </div>
+        <p class="texto-suave" style="max-width:44ch">{precios.nota}</p>
+      </div>
+      <div class="planes">
+        {
+          precios.planes.map((p) => (
+            <article class:list={['plan', { 'plan--destacado': p.destacado }]}>
+              {p.destacado && <span class="plan__etiqueta">Más elegido</span>}
+              <div>
+                <h3>{p.nombre}</h3>
+                <p class="texto-suave">{p.texto}</p>
+              </div>
+              <ul class="lista">
+                {p.incluye.map((item) => (
+                  <li>
+                    <Icon nombre="check" tam={16} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+      <div class="planes__accion">
+        <a class="btn btn--lleno" href={urlWhatsapp(precios.mensajeWhatsapp)} target="_blank" rel="noopener">
+          Cotizar por WhatsApp <Icon nombre="flecha" tam={16} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {
+    mostrarTestimonios && (
+      <section class="seccion seccion--compacta seccion--borde">
+        <div class="contenedor">
+          <span class="antetitulo">Lo que dicen</span>
+          <h2 class="titulo" style="margin-bottom:28px">Clientes</h2>
+          <ul class="testimonios">
+            {testimonios.map((t) => (
+              <li class="testimonio">
+                <blockquote>“{t.texto}”</blockquote>
+                <footer>
+                  <span class="testimonio__inicial" aria-hidden="true">{t.nombre[0]}</span>
+                  <span>
+                    <strong>{t.nombre}</strong>
+                    {t.detalle}
+                  </span>
+                </footer>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <Llamado />
+</Base>

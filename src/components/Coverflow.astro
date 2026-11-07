@@ -1,0 +1,134 @@
+---
+import Icon from './Icon.astro';
+import type { Foto } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+export interface ItemCoverflow {
+  titulo: string;
+  texto: string;
+  href: string;
+  icono: string;
+  fotos: Foto[];
+}
+
+interface Props {
+  items: ItemCoverflow[];
+}
+const { items } = Astro.props;
+
+// El efecto necesita tarjetas a ambos lados: con pocas categorías se repiten
+// en una segunda vuelta, usando otra foto de portada para que no se vean iguales.
+const MINIMO = 7;
+const vueltas = Math.ceil(MINIMO / items.length);
+const tarjetas = Array.from({ length: vueltas }, (_, vuelta) =>
+  items.map((item) => ({ ...item, foto: item.fotos[vuelta % item.fotos.length] })),
+).flat();
+---
+
+<div class="cf" data-coverflow>
+  <div class="cf__escena" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Categorías">
+    {
+      tarjetas.map((t) => (
+        <a class="cf__tarjeta" href={t.href} data-titulo={t.titulo} data-texto={t.texto} draggable="false">
+          <img
+            src={url(t.foto.thumb)}
+            srcset={`${url(t.foto.thumb)} 800w, ${url(t.foto.src)} ${t.foto.w}w`}
+            sizes="(max-width: 640px) 72vw, 40vw"
+            alt=""
+            width={t.foto.w}
+            height={t.foto.h}
+            style={`background:${t.foto.color}`}
+            draggable="false"
+          />
+          <span class="cf__rotulo">
+            <Icon nombre={t.icono} tam={26} />
+            {t.titulo}
+          </span>
+        </a>
+      ))
+    }
+  </div>
+  <div class="cf__pie" aria-live="polite">
+    <h3 data-cf-titulo>{tarjetas[0].titulo}</h3>
+    <p data-cf-texto>{tarjetas[0].texto}</p>
+  </div>
+  <div class="cf__controles">
+    <button class="redondo" type="button" aria-label="Anterior" data-cf-ant><Icon nombre="izquierda" tam={18} /></button>
+    <a class="btn" href={tarjetas[0].href} data-cf-ver>Ver galería <Icon nombre="flecha" tam={16} /></a>
+    <button class="redondo" type="button" aria-label="Siguiente" data-cf-sig><Icon nombre="derecha" tam={18} /></button>
+  </div>
+</div>
+
+<script>
+  const VISIBLES = 3;
+
+  document.querySelectorAll<HTMLElement>('[data-coverflow]').forEach((raiz) => {
+    const escena = raiz.querySelector<HTMLElement>('.cf__escena')!;
+    const tarjetas = [...raiz.querySelectorAll<HTMLAnchorElement>('.cf__tarjeta')];
+    const titulo = raiz.querySelector<HTMLElement>('[data-cf-titulo]')!;
+    const texto = raiz.querySelector<HTMLElement>('[data-cf-texto]')!;
+    const ver = raiz.querySelector<HTMLAnchorElement>('[data-cf-ver]')!;
+    const total = tarjetas.length;
+    let activa = 0;
+
+    function pintar() {
+      tarjetas.forEach((tarjeta, i) => {
+        let o = (((i - activa) % total) + total) % total;
+        if (o > total / 2) o -= total;
+        const distancia = Math.abs(o);
+        const lado = Math.sign(o);
+        tarjeta.style.setProperty('--x', String(lado * (distancia ? 58 + (distancia - 1) * 36 : 0)));
+        tarjeta.style.setProperty('--z', String(distancia ? -(150 + (distancia - 1) * 120) : 0));
+        tarjeta.style.setProperty('--r', String(-lado * 46));
+        tarjeta.style.zIndex = String(total - distancia);
+        tarjeta.classList.toggle('es-activa', o === 0);
+        tarjeta.toggleAttribute('data-oculta', distancia > VISIBLES);
+        tarjeta.tabIndex = o === 0 ? 0 : -1;
+        tarjeta.setAttribute('aria-hidden', String(o !== 0));
+      });
+      const actual = tarjetas[activa];
+      titulo.textContent = actual.dataset.titulo ?? '';
+      texto.textContent = actual.dataset.texto ?? '';
+      ver.href = actual.href;
+    }
+
+    function ir(indice: number) {
+      activa = ((indice % total) + total) % total;
+      pintar();
+    }
+
+    raiz.querySelector('[data-cf-ant]')!.addEventListener('click', () => ir(activa - 1));
+    raiz.querySelector('[data-cf-sig]')!.addEventListener('click', () => ir(activa + 1));
+
+    escena.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') ir(activa - 1);
+      if (e.key === 'ArrowRight') ir(activa + 1);
+    });
+
+    // Arrastre / swipe. Si hubo arrastre se cancela el clic que le sigue.
+    let inicioX: number | null = null;
+    let arrastro = false;
+    escena.addEventListener('pointerdown', (e) => {
+      inicioX = e.clientX;
+      arrastro = false;
+    });
+    window.addEventListener('pointerup', (e) => {
+      if (inicioX === null) return;
+      const delta = e.clientX - inicioX;
+      inicioX = null;
+      if (Math.abs(delta) < 40) return;
+      arrastro = true;
+      ir(activa + (delta < 0 ? 1 : -1));
+    });
+
+    tarjetas.forEach((tarjeta, i) => {
+      tarjeta.addEventListener('click', (e) => {
+        if (arrastro || i !== activa) e.preventDefault();
+        if (!arrastro && i !== activa) ir(i);
+        arrastro = false;
+      });
+    });
+
+    pintar();
+  });
+</script>

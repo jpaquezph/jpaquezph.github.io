@@ -1,0 +1,20 @@
+{
+  "name": "web-jpaquezph",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "red": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview",
+    "fotos": "node scripts/importar-fotos.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/montserrat": "^5.3.0",
+    "@supabase/supabase-js": "^2.117.3",
+    "astro": "^7.3.8",
+    "jspdf": "^4.2.1",
+    "sharp": "^0.35.5"
+  }
+}

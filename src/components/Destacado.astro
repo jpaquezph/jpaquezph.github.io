@@ -1,0 +1,86 @@
+---
+import Icon from './Icon.astro';
+import { destacado } from '../data/site';
+import { categoria, urlAlbum } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+const cat = categoria(destacado.categoria);
+const album = cat?.albums.find((a) => a.slug === destacado.album);
+const fotos = album ? destacado.fotos.map((n) => album.fotos[n - 1]).filter((f) => !!f) : [];
+const dos = (n: number) => String(n).padStart(2, '0');
+---
+
+{
+  cat && album && fotos.length > 0 && (
+    <div class="destacado" data-destacado>
+      <div class="destacado__visor">
+        {fotos.map((f, i) => (
+          <img
+            class:list={{ 'es-activa': i === 0 }}
+            src={url(f.src)}
+            alt={`${destacado.titulo}, foto ${i + 1}`}
+            width={f.w}
+            height={f.h}
+            loading="lazy"
+            style={`background:${f.color}`}
+          />
+        ))}
+        <button class="destacado__flecha" type="button" aria-label="Foto anterior" data-ant>
+          <Icon nombre="izquierda" tam={26} />
+        </button>
+        <button class="destacado__flecha destacado__flecha--der" type="button" aria-label="Foto siguiente" data-sig>
+          <Icon nombre="derecha" tam={26} />
+        </button>
+        <div class="destacado__barra">
+          <span><span data-actual>01</span> / {dos(fotos.length)}</span>
+          <span class="destacado__progreso"><i data-progreso style={`width:${100 / fotos.length}%`} /></span>
+        </div>
+      </div>
+      <div class="destacado__texto">
+        <span class="antetitulo antetitulo--color">Trabajo destacado</span>
+        <h3>{destacado.titulo}</h3>
+        <p>{destacado.texto}</p>
+        <a class="btn" href={urlAlbum(cat, album)}>
+          Ver galería completa <Icon nombre="flecha" tam={16} />
+        </a>
+      </div>
+      <div class="destacado__minis">
+        {fotos.slice(0, 3).map((f, i) => (
+          <button type="button" aria-label={`Ver foto ${i + 1}`} data-mini>
+            <img src={url(f.thumb)} alt="" width={f.w} height={f.h} loading="lazy" />
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-destacado]').forEach((raiz) => {
+    const fotos = [...raiz.querySelectorAll<HTMLImageElement>('.destacado__visor img')];
+    const minis = [...raiz.querySelectorAll<HTMLButtonElement>('[data-mini]')];
+    const actual = raiz.querySelector<HTMLElement>('[data-actual]')!;
+    const progreso = raiz.querySelector<HTMLElement>('[data-progreso]')!;
+    const origenes = fotos.map((f) => f.src.replace(/\.webp$/, '-m.webp'));
+    let activa = 0;
+
+    function ir(indice: number) {
+      activa = (indice + fotos.length) % fotos.length;
+      fotos.forEach((f, i) => f.classList.toggle('es-activa', i === activa));
+      actual.textContent = String(activa + 1).padStart(2, '0');
+      progreso.style.width = `${((activa + 1) / fotos.length) * 100}%`;
+      // Las miniaturas adelantan las fotos que siguen.
+      minis.forEach((mini, i) => {
+        const destino = (activa + 1 + i) % fotos.length;
+        mini.dataset.destino = String(destino);
+        mini.setAttribute('aria-label', `Ver foto ${destino + 1}`);
+        mini.querySelector('img')!.src = origenes[destino];
+      });
+    }
+
+    raiz.querySelector('[data-ant]')!.addEventListener('click', () => ir(activa - 1));
+    raiz.querySelector('[data-sig]')!.addEventListener('click', () => ir(activa + 1));
+    minis.forEach((mini) => mini.addEventListener('click', () => ir(Number(mini.dataset.destino))));
+    ir(0);
+  });
+</script>

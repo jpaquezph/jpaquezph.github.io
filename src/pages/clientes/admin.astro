@@ -1,0 +1,816 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { bannerCliente as BANNER, precios } from '../../data/site';
+---
+
+<Base titulo="Administración" privada>
+  <section class="portada portada--lisa">
+    <div class="contenedor evento__cabecera">
+      <div>
+        <span class="antetitulo antetitulo--color">Administración</span>
+        <h1>Clientes y eventos</h1>
+        <p>Creá el acceso de cada cliente y cargá todo lo de su evento.</p>
+      </div>
+      <button class="enlace" type="button" data-salir style="background:none;border:0;cursor:pointer">
+        <Icon nombre="salir" tam={16} /> Cerrar sesión
+      </button>
+    </div>
+  </section>
+
+  <section class="seccion seccion--compacta">
+    <div class="contenedor" data-admin hidden>
+      <p class="aviso" data-mensaje hidden style="margin-bottom:18px"></p>
+
+      <div data-vista="lista">
+        <div class="cabecera-seccion">
+          <h2 class="titulo">Clientes</h2>
+          <button class="btn btn--lleno" type="button" data-nuevo>Nuevo cliente</button>
+        </div>
+        <div class="admin-lista" data-lista></div>
+      </div>
+
+      <form class="formulario" data-vista="ficha" hidden novalidate autocomplete="off">
+        <div class="cabecera-seccion">
+          <h2 class="titulo" data-titulo-ficha>Nuevo cliente</h2>
+          <button class="enlace" type="button" data-volver style="background:none;border:0;cursor:pointer">
+            <Icon nombre="izquierda" tam={15} /> Volver a la lista
+          </button>
+        </div>
+
+        <fieldset class="tarjeta formulario">
+          <h2><Icon nombre="candado" tam={22} /> Acceso del cliente</h2>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="a-usuario">Usuario</label>
+              <input id="a-usuario" name="usuario" autocomplete="off" autocapitalize="none" placeholder="martina15" />
+              <span class="nota">Minúsculas, números, puntos o guiones. No se puede cambiar después.</span>
+            </div>
+            <div class="campo">
+              <label for="a-clave" data-etiqueta-clave>Contraseña</label>
+              <input id="a-clave" name="clave" autocomplete="off" />
+              <span class="nota" data-nota-clave>Mínimo 10 caracteres. Anotala: después no se puede volver a ver.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="tarjeta formulario">
+          <h2><Icon nombre="calendario" tam={22} /> Evento</h2>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="a-cliente">Nombre del cliente</label>
+              <input id="a-cliente" name="cliente" placeholder="Martina" />
+            </div>
+            <div class="campo">
+              <label for="a-titulo">Título del evento</label>
+              <input id="a-titulo" name="titulo" placeholder="Fiesta de 15" />
+            </div>
+          </div>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="a-fecha">Fecha</label>
+              <input id="a-fecha" name="fecha" type="date" />
+            </div>
+            <div class="campo">
+              <label for="a-horario">Horario acordado</label>
+              <input id="a-horario" name="horario" placeholder="21:00 a 05:00" />
+            </div>
+          </div>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="a-lugar">Lugar</label>
+              <input id="a-lugar" name="lugar" placeholder="Salón…" />
+            </div>
+            <div class="campo">
+              <label for="a-direccion">Dirección</label>
+              <input id="a-direccion" name="direccion" />
+            </div>
+          </div>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="a-paquete">Servicio contratado</label>
+              <input id="a-paquete" name="paquete" list="a-planes" />
+              <datalist id="a-planes">
+                {precios.planes.map((p) => <option value={p.nombre} />)}
+              </datalist>
+            </div>
+            <div class="campo">
+              <label for="a-estado">Estado</label>
+              <input id="a-estado" name="estado" list="a-estados" />
+              <datalist id="a-estados">
+                <option value="Contrato firmado"></option>
+                <option value="Seña recibida"></option>
+                <option value="Evento realizado"></option>
+                <option value="Fotos entregadas"></option>
+              </datalist>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="tarjeta formulario" data-seccion="lineup">
+          <h2><Icon nombre="reloj" tam={22} /> Line-up</h2>
+          <div class="acciones">
+            <label class="tilde">
+              <input type="checkbox" name="lineup_a_confirmar" data-estado-lineup="a-confirmar" />
+              A confirmar
+            </label>
+            <label class="tilde">
+              <input type="checkbox" name="lineup_no_se_detalla" data-estado-lineup="no-se-detalla" />
+              No se detalla
+            </label>
+          </div>
+          <p class="nota" data-nota-lineup></p>
+          <div class="lineup" data-lineup>
+            <div class="lineup__fila lineup__cabecera" aria-hidden="true">
+              <span>Horario</span>
+              <span>Evento</span>
+              <span>Detalle</span>
+              <span></span>
+            </div>
+            <div data-filas-lineup></div>
+            <div>
+              <button class="enlace" type="button" data-agregar-fila style="background:none;border:0;cursor:pointer">
+                + Agregar fila
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="tarjeta formulario">
+          <h2><Icon nombre="precio" tam={22} /> Precio y pagos</h2>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="a-total">Precio total ($)</label>
+              <input id="a-total" name="precio_total" type="number" min="0" step="1" />
+            </div>
+            <div class="campo">
+              <label for="a-vencimiento">Vencimiento del saldo</label>
+              <input id="a-vencimiento" name="vencimiento_saldo" type="date" />
+            </div>
+          </div>
+          <div class="campo" data-seccion="pagos">
+            <span class="etiqueta">Pagos recibidos</span>
+            <div class="lineup">
+              <div class="lineup__fila lineup__fila--pagos lineup__cabecera" aria-hidden="true">
+                <span>Concepto</span>
+                <span>Monto ($)</span>
+                <span>Fecha</span>
+                <span></span>
+              </div>
+              <div class="lineup__filas" data-filas-pagos></div>
+              <div>
+                <button class="enlace" type="button" data-agregar-pago style="background:none;border:0;cursor:pointer">
+                  + Agregar pago
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="a-incluye">Qué incluye</label>
+            <textarea id="a-incluye" name="incluye" style="min-height:100px"></textarea>
+            <span class="nota">Un ítem por línea. Al elegir un servicio de la lista se completa solo si está vacío.</span>
+          </div>
+        </fieldset>
+
+        <fieldset class="tarjeta formulario">
+          <h2><Icon nombre="carpeta" tam={22} /> Entrega de fotos</h2>
+          <div class="campo">
+            <label for="a-drive">Link a la carpeta de Google Drive</label>
+            <input id="a-drive" name="drive_url" type="url" placeholder="https://drive.google.com/drive/folders/…" />
+          </div>
+          <div class="campo">
+            <label for="a-entrega">Texto sobre la entrega</label>
+            <textarea id="a-entrega" name="entrega" style="min-height:70px"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset class="tarjeta formulario">
+          <h2><Icon nombre="documento" tam={22} /> Contrato y condiciones</h2>
+          <div class="campo">
+            <label for="a-firmado">Fecha de firma del contrato</label>
+            <input id="a-firmado" name="contrato_firmado" type="date" />
+          </div>
+          <div class="campo">
+            <label for="a-condiciones">Condiciones de contratación</label>
+            <textarea id="a-condiciones" name="condiciones"></textarea>
+            <span class="nota">Una por línea. Si lo dejás vacío se muestran las condiciones generales del sitio.</span>
+          </div>
+        </fieldset>
+
+        <fieldset class="tarjeta formulario" data-seccion="archivos" data-archivos hidden>
+          <h2><Icon nombre="descarga" tam={22} /> Archivos del cliente</h2>
+          <div class="campo">
+            <span class="etiqueta">Copia del contrato (PDF)</span>
+            <p class="nota" data-contrato-actual></p>
+            <input type="file" accept="application/pdf" data-subir-contrato />
+          </div>
+          <div class="campo">
+            <span class="etiqueta">Banner del encabezado</span>
+            <span class="nota">
+              Foto de fondo de la parte de arriba de la página del cliente, detrás del título del evento.<br />
+              <strong>Tamaño ideal: {BANNER.ancho} × {BANNER.alto} px</strong> (horizontal, 3 veces más ancha que alta),
+              en JPG o PNG. Mínimo {BANNER.anchoMinimo} px de ancho.<br />
+              Dejá lo importante en el centro: en el celular se recortan los costados. Se oscurece un poco para que el
+              texto se lea.
+            </span>
+            <div class="admin-banner" data-banner hidden>
+              <img alt="Banner actual" data-banner-img />
+              <button type="button" class="redondo" data-quitar-banner aria-label="Quitar banner">✕</button>
+            </div>
+            <input type="file" accept="image/jpeg,image/png,image/webp" data-subir-banner />
+          </div>
+          <div class="campo">
+            <span class="etiqueta">Fotos destacadas</span>
+            <div class="fotos-destacadas admin-fotos" data-fotos></div>
+            <input type="file" accept="image/*" multiple data-subir-fotos />
+            <span class="nota">Se achican solas antes de subir. Para sacar una foto, tocá la X.</span>
+          </div>
+          <p class="nota" data-estado-archivos></p>
+        </fieldset>
+
+        <p class="error" role="alert" data-error></p>
+        <div class="acciones admin-pie">
+          <button class="btn btn--lleno" type="submit" data-guardar>Guardar</button>
+          <button class="btn" type="button" data-resumen hidden>
+            <Icon nombre="descarga" tam={16} /> Descargar resumen (PDF)
+          </button>
+          <button class="btn btn--peligro" type="button" data-borrar hidden>Borrar cliente</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <dialog class="dialogo" data-dialogo-borrar aria-labelledby="titulo-borrar">
+    <form class="formulario" method="dialog" data-form-borrar>
+      <h2 id="titulo-borrar">Borrar cliente</h2>
+      <p class="texto-suave" data-texto-borrar></p>
+      <input type="text" name="username" autocomplete="username" hidden />
+      <div class="campo">
+        <label for="a-confirmacion">Tu contraseña de administrador</label>
+        <input id="a-confirmacion" name="confirmacion" type="password" autocomplete="current-password" required />
+      </div>
+      <p class="error" role="alert" data-error-borrar></p>
+      <div class="acciones">
+        <button class="btn btn--peligro" type="submit" data-confirmar-borrar>Borrar definitivamente</button>
+        <button class="btn" type="button" data-cancelar-borrar>Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+</Base>
+
+<script>
+  import { precios } from '../../data/site';
+  import {
+    ErrorDeCampo,
+    archivosDe,
+    borrarArchivo,
+    borrarCliente,
+    cambiarClave,
+    confirmarClave,
+    correoDeSesion,
+    crearCliente,
+    guardarEvento,
+    listarEventos,
+    obtenerEvento,
+    subirBanner,
+    subirContrato,
+    subirDestacadas,
+    type DatosEvento,
+    type FilaEvento,
+  } from '../../lib/admin';
+  import { leerLineup, portal, type EstadoLineup, type ItemLineup } from '../../lib/portal';
+  import { descargarResumen } from '../../lib/resumen-pdf';
+  import { url } from '../../lib/rutas';
+
+  const panel = document.querySelector<HTMLElement>('[data-admin]')!;
+  const $ = <T extends HTMLElement>(selector: string) => panel.querySelector<T>(selector)!;
+  const vistaLista = $('[data-vista=lista]');
+  const ficha = $<HTMLFormElement>('[data-vista=ficha]');
+  const lista = $('[data-lista]');
+  const mensaje = $('[data-mensaje]');
+  const error = $('[data-error]');
+  const guardar = $<HTMLButtonElement>('[data-guardar]');
+  const borrar = $<HTMLButtonElement>('[data-borrar]');
+  const resumen = $<HTMLButtonElement>('[data-resumen]');
+  const bloqueArchivos = $('[data-archivos]');
+  const estadoArchivos = $('[data-estado-archivos]');
+  const filasLineup = $('[data-filas-lineup]');
+  const filasPagos = $('[data-filas-pagos]');
+  const tildesLineup = [...panel.querySelectorAll<HTMLInputElement>('[data-estado-lineup]')];
+  const campo = (nombre: string) => ficha.elements.namedItem(nombre) as HTMLInputElement | HTMLTextAreaElement;
+
+  /** Evento que se está editando; null mientras se carga uno nuevo. */
+  let actual: FilaEvento | null = null;
+  /** Lo que tiene subido el cliente actual, para el resumen en PDF. */
+  let archivosActuales = { contrato: false, banner: false, destacadas: 0 };
+  /** Si se tocó el formulario desde la última vez que se guardó o abrió la ficha. */
+  let sinGuardar = false;
+
+  const esc = (texto: string) =>
+    texto.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const fechaCorta = (iso: string) => new Date(`${iso}T12:00`).toLocaleDateString('es-AR');
+  const detalleDe = (e: unknown) => (e instanceof Error ? e.message : 'Ocurrió un error inesperado.');
+
+  function avisar(texto: string) {
+    mensaje.textContent = texto;
+    mensaje.hidden = !texto;
+  }
+
+  // --- Errores: además del mensaje, se marca la sección (y el campo) donde está el problema ---
+
+  function limpiarMarcas() {
+    ficha.querySelectorAll('.con-error').forEach((e) => e.classList.remove('con-error'));
+    ficha.querySelectorAll('[aria-invalid]').forEach((e) => e.removeAttribute('aria-invalid'));
+    ficha.querySelectorAll('[data-error-seccion]').forEach((e) => e.remove());
+  }
+
+  function marcar(nombre: string, texto: string) {
+    const elemento =
+      ficha.querySelector<HTMLElement>(`[data-seccion="${nombre}"]`) ?? (ficha.elements.namedItem(nombre) as HTMLElement | null);
+    const seccion = elemento?.closest('fieldset');
+    if (!elemento || !seccion) return;
+    seccion.classList.add('con-error');
+    const aviso = document.createElement('p');
+    aviso.className = 'error';
+    aviso.dataset.errorSeccion = '';
+    aviso.textContent = texto;
+    seccion.querySelector('h2')!.after(aviso);
+    if (elemento !== seccion) {
+      elemento.setAttribute('aria-invalid', 'true');
+      elemento.focus({ preventScroll: true });
+    }
+    seccion.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
+  // --- Line-up ---
+
+  function agregarFila(item: Partial<ItemLineup> = {}) {
+    const fila = document.createElement('div');
+    fila.className = 'lineup__fila';
+    fila.innerHTML = `
+      <input data-celda="hora" aria-label="Horario" value="${esc(item.hora ?? '')}">
+      <input data-celda="titulo" aria-label="Evento" value="${esc(item.titulo ?? '')}">
+      <input data-celda="detalle" aria-label="Detalle" placeholder="Opcional" value="${esc(item.detalle ?? '')}">
+      <button type="button" class="redondo" data-quitar-fila aria-label="Quitar fila">✕</button>`;
+    filasLineup.append(fila);
+    return fila;
+  }
+
+  const estadoLineup = (): EstadoLineup =>
+    (tildesLineup.find((t) => t.checked)?.dataset.estadoLineup as EstadoLineup | undefined) ?? 'detallado';
+
+  /** Filas del line-up con algo escrito, sin exigir que estén completas. */
+  const leerLineupSinValidar = () =>
+    [...filasLineup.querySelectorAll<HTMLElement>('.lineup__fila')].filter((fila) =>
+      [...fila.querySelectorAll('input')].some((celda) => celda.value.trim()),
+    );
+
+  function aplicarEstadoLineup() {
+    const estado = estadoLineup();
+    // Las filas solo se ocultan: lo que tengan cargado se guarda igual y vuelve al destildar.
+    $('[data-lineup]').hidden = estado !== 'detallado';
+    const guardadas = estado !== 'detallado' && leerLineupSinValidar().length
+      ? ' Las filas que ya estaban cargadas quedan guardadas y vuelven a aparecer al destildar.'
+      : '';
+    $('[data-nota-lineup]').textContent =
+      estado === 'a-confirmar'
+        ? `El cliente va a ver el line-up como "A confirmar".${guardadas}`
+        : estado === 'no-se-detalla'
+          ? `El cliente no va a ver la sección de line-up.${guardadas}`
+          : 'Una fila por momento. El detalle es opcional.';
+  }
+
+  function leerLineupDelFormulario(): ItemLineup[] {
+    const items: ItemLineup[] = [];
+    for (const fila of filasLineup.querySelectorAll<HTMLElement>('.lineup__fila')) {
+      const celda = (nombre: string) => fila.querySelector<HTMLInputElement>(`[data-celda=${nombre}]`)!;
+      const [hora, titulo, detalle] = ['hora', 'titulo', 'detalle'].map((n) => celda(n).value.trim());
+      if (!hora && !titulo && !detalle) continue;
+      if (!titulo && estadoLineup() === 'detallado') {
+        celda('titulo').setAttribute('aria-invalid', 'true');
+        throw new ErrorDeCampo('En el line-up hay una fila sin completar la columna "Evento".', 'lineup');
+      }
+      items.push(detalle ? { hora, titulo, detalle } : { hora, titulo });
+    }
+    return items;
+  }
+
+  function escribirLineup(valor: unknown) {
+    const { estado, items } = leerLineup(valor);
+    tildesLineup.forEach((t) => (t.checked = t.dataset.estadoLineup === estado));
+    filasLineup.replaceChildren();
+    items.forEach(agregarFila);
+    for (let i = items.length; i < 3; i++) agregarFila();
+    aplicarEstadoLineup();
+  }
+
+  // Las dos opciones se excluyen entre sí.
+  tildesLineup.forEach((tilde) =>
+    tilde.addEventListener('change', () => {
+      if (tilde.checked) tildesLineup.filter((t) => t !== tilde).forEach((t) => (t.checked = false));
+      aplicarEstadoLineup();
+    }),
+  );
+  $('[data-agregar-fila]').addEventListener('click', () => agregarFila().querySelector('input')!.focus());
+  filasLineup.addEventListener('click', (e) => {
+    (e.target as HTMLElement).closest('[data-quitar-fila]')?.closest('.lineup__fila')?.remove();
+  });
+
+  // --- Resto del formulario ---
+
+  const lineas = (texto: string) =>
+    texto
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+  // --- Pagos: una fila por pago, con la fecha elegida en un calendario ---
+
+  type Pago = DatosEvento['pagos'][number];
+
+  function agregarPago(pago: Partial<Pago> = {}) {
+    const fila = document.createElement('div');
+    fila.className = 'lineup__fila lineup__fila--pagos';
+    fila.innerHTML = `
+      <input data-celda="concepto" aria-label="Concepto" placeholder="Seña" value="${esc(pago.concepto ?? '')}">
+      <input data-celda="monto" aria-label="Monto en pesos" type="number" min="0" step="1" inputmode="numeric" value="${pago.monto ?? ''}">
+      <input data-celda="fecha" aria-label="Fecha del pago" type="date" value="${esc(pago.fecha ?? '')}">
+      <button type="button" class="redondo" data-quitar-pago aria-label="Quitar pago">✕</button>`;
+    filasPagos.append(fila);
+    return fila;
+  }
+
+  function leerPagos(): Pago[] {
+    const pagos: Pago[] = [];
+    for (const fila of filasPagos.querySelectorAll<HTMLElement>('.lineup__fila')) {
+      const celda = (nombre: string) => fila.querySelector<HTMLInputElement>(`[data-celda=${nombre}]`)!;
+      const [concepto, monto, fecha] = ['concepto', 'monto', 'fecha'].map((n) => celda(n).value.trim());
+      // Un monto mal escrito deja el valor vacío pero marca el campo como inválido.
+      const montoInvalido = celda('monto').validity.badInput;
+      if (!concepto && !monto && !fecha && !montoInvalido) continue;
+      const falta = !concepto ? 'concepto' : !Number(monto) ? 'monto' : !fecha ? 'fecha' : null;
+      if (falta) {
+        celda(falta).setAttribute('aria-invalid', 'true');
+        const texto = { concepto: 'el concepto', monto: 'el monto', fecha: 'la fecha' }[falta];
+        throw new ErrorDeCampo(`A un pago le falta ${texto}${concepto ? ` ("${concepto}")` : ''}.`, 'pagos');
+      }
+      pagos.push({ concepto, monto: Math.round(Number(monto)), fecha });
+    }
+    return pagos;
+  }
+
+  function escribirPagos(pagos: Pago[]) {
+    filasPagos.replaceChildren();
+    pagos.forEach(agregarPago);
+    if (!pagos.length) agregarPago();
+  }
+
+  $('[data-agregar-pago]').addEventListener('click', () => agregarPago().querySelector('input')!.focus());
+  filasPagos.addEventListener('click', (e) => {
+    const quitar = (e.target as HTMLElement).closest('[data-quitar-pago]');
+    if (!quitar) return;
+    quitar.closest('.lineup__fila')!.remove();
+    sinGuardar = true;
+    if (!filasPagos.children.length) agregarPago();
+  });
+
+  function leer(): DatosEvento {
+    const texto = (nombre: string) => campo(nombre).value.trim();
+    for (const [nombre, etiqueta] of [['cliente', 'el nombre del cliente'], ['titulo', 'el título del evento'], ['fecha', 'la fecha del evento']]) {
+      if (!texto(nombre)) throw new ErrorDeCampo(`Falta ${etiqueta}.`, nombre);
+    }
+    return {
+      cliente: texto('cliente'),
+      titulo: texto('titulo'),
+      tipo: '',
+      fecha: texto('fecha'),
+      horario: texto('horario'),
+      lugar: texto('lugar'),
+      direccion: texto('direccion'),
+      paquete: texto('paquete'),
+      estado: texto('estado'),
+      drive_url: texto('drive_url') || null,
+      entrega: texto('entrega'),
+      cronograma: { estado: estadoLineup(), items: leerLineupDelFormulario() },
+      precio_total: Number(texto('precio_total') || 0),
+      pagos: leerPagos(),
+      vencimiento_saldo: texto('vencimiento_saldo') || null,
+      incluye: lineas(texto('incluye')),
+      contrato_firmado: texto('contrato_firmado') || null,
+      condiciones: lineas(texto('condiciones')),
+    };
+  }
+
+  function escribir(e: FilaEvento | null) {
+    ficha.reset();
+    escribirLineup(e?.cronograma);
+    escribirPagos(e?.pagos ?? []);
+    if (!e) {
+      campo('estado').value = 'Contrato firmado';
+      return;
+    }
+    for (const nombre of ['cliente', 'titulo', 'fecha', 'horario', 'lugar', 'direccion', 'paquete', 'estado', 'entrega'] as const) {
+      campo(nombre).value = e[nombre] ?? '';
+    }
+    campo('usuario').value = e.usuario;
+    campo('drive_url').value = e.drive_url ?? '';
+    campo('precio_total').value = String(e.precio_total ?? '');
+    campo('vencimiento_saldo').value = e.vencimiento_saldo ?? '';
+    campo('contrato_firmado').value = e.contrato_firmado ?? '';
+    campo('incluye').value = e.incluye.join('\n');
+    campo('condiciones').value = e.condiciones.join('\n');
+  }
+
+  // --- Vistas ---
+
+  // Al cambiar de vista no queda nada del cliente anterior: ni el aviso, ni sus
+  // datos en el formulario, ni su fila en la lista mientras se vuelve a consultar.
+  async function mostrarLista() {
+    actual = null;
+    avisar('');
+    escribir(null);
+    ficha.hidden = true;
+    vistaLista.hidden = false;
+    lista.innerHTML = '<p class="texto-suave">Cargando…</p>';
+    const eventos = await listarEventos();
+    lista.innerHTML = eventos.length
+      ? eventos
+          .map(
+            (e) => `
+        <button type="button" class="admin-fila" data-id="${esc(e.id)}">
+          <strong>${esc(e.cliente)}</strong>
+          <span>${esc(e.titulo)}</span>
+          <span>${fechaCorta(e.fecha)}</span>
+          <span class="admin-fila__usuario">${esc(e.usuario || '(sin usuario)')}</span>
+        </button>`,
+          )
+          .join('')
+      : '<p class="texto-suave">Todavía no hay clientes cargados.</p>';
+  }
+
+  async function mostrarFicha(evento: FilaEvento | null) {
+    actual = evento;
+    error.textContent = '';
+    avisar('');
+    limpiarMarcas();
+    escribir(evento);
+    $('[data-titulo-ficha]').textContent = evento ? `${evento.cliente} · ${evento.titulo}` : 'Nuevo cliente';
+    campo('usuario').toggleAttribute('readonly', !!evento);
+    $('[data-etiqueta-clave]').textContent = evento ? 'Nueva contraseña (opcional)' : 'Contraseña';
+    $('[data-nota-clave]').textContent = evento
+      ? 'Dejala vacía para no cambiarla.'
+      : 'Mínimo 10 caracteres. Anotala: después no se puede volver a ver.';
+    borrar.hidden = !evento;
+    resumen.hidden = !evento;
+    bloqueArchivos.hidden = !evento;
+    sinGuardar = false;
+    vistaLista.hidden = true;
+    ficha.hidden = false;
+    window.scrollTo({ top: 0 });
+    if (evento) await pintarArchivos();
+  }
+
+  async function pintarArchivos() {
+    if (!actual) return;
+    const { contrato, banner, destacadas } = await archivosDe(actual.user_id);
+    archivosActuales = { contrato: !!contrato, banner: !!banner, destacadas: destacadas.length };
+    $('[data-banner]').hidden = !banner;
+    $('[data-banner]').dataset.ruta = banner?.ruta ?? '';
+    if (banner) $<HTMLImageElement>('[data-banner-img]').src = banner.enlace;
+    else $<HTMLImageElement>('[data-banner-img]').removeAttribute('src');
+    $('[data-contrato-actual]').innerHTML = contrato
+      ? `Cargado: <a href="${esc(contrato.enlace)}" target="_blank" rel="noopener" style="text-decoration:underline">ver PDF</a>. Subir otro lo reemplaza.`
+      : 'Todavía no hay contrato cargado.';
+    $('[data-fotos]').innerHTML = destacadas
+      .map(
+        (f) => `
+      <div class="admin-foto">
+        <img src="${esc(f.enlace)}" alt="" loading="lazy">
+        <button type="button" class="redondo" data-quitar="${esc(f.ruta)}" aria-label="Quitar foto">✕</button>
+      </div>`,
+      )
+      .join('');
+  }
+
+  // Envuelve una acción: bloquea Guardar mientras corre y, si falla, muestra el
+  // mensaje y marca la sección. `seccion` es la que se marca cuando el error no dice cuál.
+  async function ejecutar(accion: () => Promise<void>, destino: HTMLElement = error, seccion?: string) {
+    destino.textContent = '';
+    avisar('');
+    limpiarMarcas();
+    guardar.disabled = true;
+    try {
+      await accion();
+    } catch (e) {
+      const texto = detalleDe(e);
+      if (destino === mensaje) avisar(texto);
+      else destino.textContent = texto;
+      const donde = e instanceof ErrorDeCampo ? e.campo : seccion;
+      if (donde) marcar(donde, texto);
+    }
+    guardar.disabled = false;
+  }
+
+  // --- Acciones ---
+
+  $('[data-nuevo]').addEventListener('click', () => mostrarFicha(null));
+  $('[data-volver]').addEventListener('click', () => ejecutar(mostrarLista));
+
+  lista.addEventListener('click', (e) => {
+    const fila = (e.target as HTMLElement).closest<HTMLElement>('[data-id]');
+    if (fila) ejecutar(async () => mostrarFicha(await obtenerEvento(fila.dataset.id!)), mensaje);
+  });
+
+  // Al elegir un servicio conocido se propone lo que incluye, sin pisar lo ya escrito.
+  campo('paquete').addEventListener('change', () => {
+    const plan = precios.planes.find((p) => p.nombre === campo('paquete').value);
+    if (plan && !campo('incluye').value.trim()) campo('incluye').value = plan.incluye.join('\n');
+    if (plan && !campo('precio_total').value) campo('precio_total').value = String(plan.precio);
+  });
+
+  ficha.addEventListener('submit', (e) => {
+    e.preventDefault();
+    ejecutar(async () => {
+      const clave = campo('clave').value;
+      const usuario = campo('usuario').value.trim().toLowerCase();
+      if (!actual && !/^[a-z0-9][a-z0-9._-]*$/.test(usuario)) {
+        throw new ErrorDeCampo('El usuario solo puede tener minúsculas, números, puntos o guiones.', 'usuario');
+      }
+      if ((!actual || clave) && clave.length < 10) {
+        throw new ErrorDeCampo('La contraseña necesita al menos 10 caracteres.', 'clave');
+      }
+      const datos = leer();
+      if (actual) {
+        const guardado = await guardarEvento(actual.id, datos);
+        if (clave) await cambiarClave(actual.user_id, clave);
+        await mostrarFicha(guardado);
+        avisar(clave ? 'Cambios guardados y contraseña actualizada.' : 'Cambios guardados.');
+        return;
+      }
+      const creado = await crearCliente(usuario, clave, datos);
+      await mostrarFicha(creado);
+      avisar(`Cliente creado. Ingresa con usuario "${usuario}" y la contraseña que cargaste. Ya podés subirle el contrato y las fotos.`);
+    });
+  });
+
+  // Los archivos se suben aparte: no cuentan como cambios del formulario.
+  ficha.addEventListener('input', (e) => {
+    if ((e.target as HTMLInputElement).type !== 'file') sinGuardar = true;
+  });
+  filasLineup.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('[data-quitar-fila]')) sinGuardar = true;
+  });
+
+  // El resumen sale con lo último guardado, no con lo que esté escrito sin guardar.
+  resumen.addEventListener('click', () => {
+    if (!actual) return;
+    const evento = actual;
+    ejecutar(async () => {
+      resumen.disabled = true;
+      try {
+        await descargarResumen(evento, archivosActuales);
+      } finally {
+        resumen.disabled = false;
+      }
+      if (sinGuardar) avisar('El resumen se armó con los datos guardados. Guardá los cambios y volvé a descargarlo para incluirlos.');
+    }, mensaje);
+  });
+
+  // Borrar pide confirmación y volver a escribir la contraseña de administrador.
+  const dialogoBorrar = document.querySelector<HTMLDialogElement>('[data-dialogo-borrar]')!;
+  const formBorrar = dialogoBorrar.querySelector<HTMLFormElement>('[data-form-borrar]')!;
+  const errorBorrar = dialogoBorrar.querySelector<HTMLElement>('[data-error-borrar]')!;
+  const confirmarBorrar = dialogoBorrar.querySelector<HTMLButtonElement>('[data-confirmar-borrar]')!;
+  const claveBorrar = formBorrar.elements.namedItem('confirmacion') as HTMLInputElement;
+
+  borrar.addEventListener('click', async () => {
+    if (!actual) return;
+    formBorrar.reset();
+    (formBorrar.elements.namedItem('username') as HTMLInputElement).value = await correoDeSesion();
+    errorBorrar.textContent = '';
+    dialogoBorrar.querySelector('[data-texto-borrar]')!.textContent =
+      `Vas a borrar a ${actual.cliente} (${actual.titulo}). Se eliminan su acceso, su evento, el contrato y las fotos. No se puede deshacer.`;
+    dialogoBorrar.showModal();
+  });
+
+  dialogoBorrar.querySelector('[data-cancelar-borrar]')!.addEventListener('click', () => dialogoBorrar.close());
+
+  formBorrar.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!actual) return;
+    const { user_id, cliente: nombre } = actual;
+    errorBorrar.textContent = '';
+    confirmarBorrar.disabled = true;
+    try {
+      if (!(await confirmarClave(claveBorrar.value))) {
+        errorBorrar.textContent = 'La contraseña no es correcta.';
+      } else {
+        await borrarCliente(user_id);
+        dialogoBorrar.close();
+        await mostrarLista();
+        avisar(`Se borró a ${nombre}.`);
+      }
+    } catch (fallo) {
+      errorBorrar.textContent = detalleDe(fallo);
+    }
+    confirmarBorrar.disabled = false;
+  });
+
+  $<HTMLInputElement>('[data-subir-contrato]').addEventListener('change', (e) => {
+    const entrada = e.target as HTMLInputElement;
+    const archivo = entrada.files?.[0];
+    if (!archivo || !actual) return;
+    const { user_id } = actual;
+    ejecutar(
+      async () => {
+        estadoArchivos.textContent = 'Subiendo contrato…';
+        await subirContrato(user_id, archivo);
+        entrada.value = '';
+        await pintarArchivos();
+        estadoArchivos.textContent = 'Contrato cargado.';
+      },
+      estadoArchivos,
+      'archivos',
+    );
+  });
+
+  $<HTMLInputElement>('[data-subir-banner]').addEventListener('change', (e) => {
+    const entrada = e.target as HTMLInputElement;
+    const archivo = entrada.files?.[0];
+    if (!archivo || !actual) return;
+    const { user_id } = actual;
+    ejecutar(
+      async () => {
+        estadoArchivos.textContent = 'Subiendo banner…';
+        const advertencia = await subirBanner(user_id, archivo);
+        entrada.value = '';
+        await pintarArchivos();
+        estadoArchivos.textContent = advertencia ? `Banner cargado. Ojo: ${advertencia}` : 'Banner cargado.';
+      },
+      estadoArchivos,
+      'archivos',
+    );
+  });
+
+  $('[data-quitar-banner]').addEventListener('click', () => {
+    const ruta = $('[data-banner]').dataset.ruta;
+    if (!ruta) return;
+    ejecutar(
+      async () => {
+        await borrarArchivo(ruta);
+        await pintarArchivos();
+        estadoArchivos.textContent = 'Banner quitado.';
+      },
+      estadoArchivos,
+      'archivos',
+    );
+  });
+
+  $<HTMLInputElement>('[data-subir-fotos]').addEventListener('change', (e) => {
+    const entrada = e.target as HTMLInputElement;
+    const fotos = [...(entrada.files ?? [])];
+    if (!fotos.length || !actual) return;
+    const { user_id } = actual;
+    ejecutar(
+      async () => {
+        estadoArchivos.textContent = `Subiendo fotos… 0 de ${fotos.length}`;
+        await subirDestacadas(user_id, fotos, (hechas) => {
+          estadoArchivos.textContent = `Subiendo fotos… ${hechas} de ${fotos.length}`;
+        });
+        entrada.value = '';
+        await pintarArchivos();
+        estadoArchivos.textContent = 'Fotos cargadas.';
+      },
+      estadoArchivos,
+      'archivos',
+    );
+  });
+
+  $('[data-fotos]').addEventListener('click', (e) => {
+    const boton = (e.target as HTMLElement).closest<HTMLElement>('[data-quitar]');
+    if (!boton) return;
+    ejecutar(
+      async () => {
+        await borrarArchivo(boton.dataset.quitar!);
+        await pintarArchivos();
+      },
+      estadoArchivos,
+      'archivos',
+    );
+  });
+
+  document.querySelector('[data-salir]')!.addEventListener('click', async () => {
+    await portal.salir();
+    location.assign(url('clientes/'));
+  });
+
+  // Solo el administrador puede ver el panel; el resto vuelve al ingreso.
+  portal
+    .esAdmin()
+    .then(async (admin) => {
+      if (!admin) return location.replace(url('clientes/'));
+      panel.hidden = false;
+      await ejecutar(mostrarLista, mensaje);
+    })
+    .catch(() => location.replace(url('clientes/')));
+</script>

@@ -1,0 +1,34 @@
+---
+import type { Foto } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+interface Props {
+  antetitulo?: string;
+  titulo: string;
+  texto?: string;
+  foto?: Foto;
+  migas?: { texto: string; href: string }[];
+}
+const { antetitulo, titulo, texto, foto, migas = [] } = Astro.props;
+---
+
+<section class:list={['portada', { 'portada--lisa': !foto }]}>
+  {foto && <img class="portada__foto" src={url(foto.src)} alt="" width={foto.w} height={foto.h} />}
+  <div class="contenedor">
+    {
+      migas.length > 0 && (
+        <nav class="migas" aria-label="Ruta">
+          {migas.map((m) => (
+            <>
+              <a href={m.href}>{m.texto}</a>
+              <span aria-hidden="true">/</span>
+            </>
+          ))}
+        </nav>
+      )
+    }
+    {antetitulo && <span class="antetitulo antetitulo--color">{antetitulo}</span>}
+    <h1>{titulo}</h1>
+    {texto && <p>{texto}</p>}
+  </div>
+</section>

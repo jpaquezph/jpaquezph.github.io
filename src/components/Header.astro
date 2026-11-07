@@ -1,0 +1,71 @@
+---
+import Icon from './Icon.astro';
+import { menu, sitio } from '../data/site';
+import { categorias, urlCategoria } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+interface Props {
+  activo?: string;
+}
+const { activo } = Astro.props;
+---
+
+<header class="encabezado" data-encabezado>
+  <div class="contenedor encabezado__fila">
+    <a class="logo" href={url()} aria-label={`${sitio.marca} ${sitio.bajada}, inicio`}>
+      <img class="logo__marca" src={url('logo.svg')} alt="" width="192" height="187" />
+      <span class="logo__bajada">{sitio.bajada}</span>
+    </a>
+    <button class="redondo encabezado__menu" type="button" aria-label="Menú" aria-expanded="false" data-menu>
+      <Icon nombre="menu" />
+    </button>
+    <div class="encabezado__panel">
+      <nav class="nav" aria-label="Principal">
+        {
+          menu.map((item) =>
+            item.ruta === 'portfolio/' ? (
+              <div class="nav__grupo">
+                <a href={url(item.ruta)} aria-current={item.ruta === activo ? 'page' : undefined}>
+                  {item.texto}
+                  <Icon nombre="abajo" tam={12} />
+                </a>
+                <div class="nav__sub">
+                  <div class="nav__lista">
+                    {categorias.map((c) => (
+                      <a href={urlCategoria(c)}>
+                        <Icon nombre={c.icono} tam={18} />
+                        {c.nombre}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <a href={url(item.ruta)} aria-current={item.ruta === activo ? 'page' : undefined}>
+                {item.texto}
+              </a>
+            ),
+          )
+        }
+      </nav>
+      <a class="btn" href={url('clientes/')}>
+        <Icon nombre="candado" tam={15} />
+        Galerías clientes
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const encabezado = document.querySelector<HTMLElement>('[data-encabezado]')!;
+  const boton = encabezado.querySelector<HTMLButtonElement>('[data-menu]')!;
+
+  const alDesplazar = () => encabezado.classList.toggle('con-fondo', window.scrollY > 24);
+  alDesplazar();
+  window.addEventListener('scroll', alDesplazar, { passive: true });
+
+  boton.addEventListener('click', () => {
+    const abierto = encabezado.classList.toggle('abierto');
+    boton.setAttribute('aria-expanded', String(abierto));
+  });
+</script>

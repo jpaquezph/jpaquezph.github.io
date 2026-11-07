@@ -1,0 +1,48 @@
+---
+// Visor a pantalla completa. Abre cualquier elemento con data-visor="url-de-la-foto",
+// también los que se agregan a la página después de cargar.
+import Icon from './Icon.astro';
+---
+
+<dialog class="visor" data-visor-dialogo aria-label="Foto ampliada">
+  <img alt="" />
+  <button class="redondo visor__cerrar" type="button" aria-label="Cerrar" data-cerrar><Icon nombre="cerrar" /></button>
+  <button class="redondo visor__ant" type="button" aria-label="Anterior" data-ant><Icon nombre="izquierda" /></button>
+  <button class="redondo visor__sig" type="button" aria-label="Siguiente" data-sig><Icon nombre="derecha" /></button>
+  <span class="visor__cuenta" data-cuenta></span>
+</dialog>
+
+<script>
+  const dialogo = document.querySelector<HTMLDialogElement>('[data-visor-dialogo]')!;
+  const imagen = dialogo.querySelector('img')!;
+  const cuenta = dialogo.querySelector<HTMLElement>('[data-cuenta]')!;
+  let lista: HTMLElement[] = [];
+  let indice = 0;
+
+  function mostrar(i: number) {
+    indice = (i + lista.length) % lista.length;
+    const origen = lista[indice];
+    imagen.src = origen.dataset.visor!;
+    imagen.alt = origen.querySelector('img')?.alt ?? '';
+    cuenta.textContent = `${indice + 1} / ${lista.length}`;
+  }
+
+  document.addEventListener('click', (e) => {
+    const origen = (e.target as HTMLElement).closest<HTMLElement>('[data-visor]');
+    if (!origen) return;
+    lista = [...document.querySelectorAll<HTMLElement>('[data-visor]')];
+    mostrar(lista.indexOf(origen));
+    dialogo.showModal();
+  });
+
+  dialogo.querySelector('[data-cerrar]')!.addEventListener('click', () => dialogo.close());
+  dialogo.querySelector('[data-ant]')!.addEventListener('click', () => mostrar(indice - 1));
+  dialogo.querySelector('[data-sig]')!.addEventListener('click', () => mostrar(indice + 1));
+  dialogo.addEventListener('click', (e) => {
+    if (e.target === dialogo) dialogo.close();
+  });
+  dialogo.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') mostrar(indice - 1);
+    if (e.key === 'ArrowRight') mostrar(indice + 1);
+  });
+</script>

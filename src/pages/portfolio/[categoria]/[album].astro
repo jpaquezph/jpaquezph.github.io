@@ -1,0 +1,39 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Galeria from '../../../components/Galeria.astro';
+import Llamado from '../../../components/Llamado.astro';
+import Portada from '../../../components/Portada.astro';
+import { categorias, type Album, type Categoria } from '../../../lib/galeria';
+import { url } from '../../../lib/rutas';
+
+export function getStaticPaths() {
+  return categorias.flatMap((c) =>
+    c.albums.map((a) => ({ params: { categoria: c.slug, album: a.slug }, props: { categoria: c, album: a } })),
+  );
+}
+
+interface Props {
+  categoria: Categoria;
+  album: Album;
+}
+const { categoria, album } = Astro.props;
+---
+
+<Base titulo={`${album.nombre} · ${categoria.nombre}`} activo="portfolio/">
+  <Portada
+    antetitulo={`${album.fotos.length} fotos`}
+    titulo={album.nombre}
+    texto={album.descripcion}
+    foto={album.banners?.[0] ?? album.fotos[0]}
+    migas={[
+      { texto: 'Portfolio', href: url('portfolio/') },
+      { texto: categoria.nombre, href: url(`portfolio/${categoria.slug}/`) },
+    ]}
+  />
+  <section class="seccion">
+    <div class="contenedor">
+      <Galeria fotos={album.fotos} nombre={album.nombre} />
+    </div>
+  </section>
+  <Llamado />
+</Base>

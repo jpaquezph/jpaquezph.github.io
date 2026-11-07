@@ -1,0 +1,99 @@
+---
+// Pase de fotos chico, con avance automático. Cada foto lleva al proyecto del que sale.
+import Icon from './Icon.astro';
+import type { Foto } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+interface Props {
+  fotos: { foto: Foto; titulo: string; href: string; accion?: string }[];
+}
+const { fotos } = Astro.props;
+---
+
+{
+  fotos.length > 0 && (
+    <div class="pase" data-pase>
+      {fotos.map(({ foto, titulo }, i) => (
+        <img
+          class:list={{ 'es-activa': i === 0 }}
+          src={i === 0 ? url(foto.src) : undefined}
+          data-src={url(foto.src)}
+          alt={titulo}
+          width={foto.w}
+          height={foto.h}
+          style={`background:${foto.color}`}
+        />
+      ))}
+      <button class="pase__flecha" type="button" aria-label="Foto anterior" data-ant>
+        <Icon nombre="izquierda" tam={24} />
+      </button>
+      <button class="pase__flecha pase__flecha--der" type="button" aria-label="Foto siguiente" data-sig>
+        <Icon nombre="derecha" tam={24} />
+      </button>
+      <div class="pase__pie">
+        {fotos.map(({ titulo, href, accion = 'Ver proyecto' }, i) => (
+          <a class:list={['pase__rotulo', { 'es-activa': i === 0 }]} href={href} tabindex={i === 0 ? 0 : -1}>
+            <strong>{titulo}</strong>
+            <span>
+              {accion} <Icon nombre="flecha" tam={14} />
+            </span>
+          </a>
+        ))}
+        <div class="pase__puntos">
+          {fotos.map((_, i) => (
+            <button type="button" class:list={{ 'es-activa': i === 0 }} aria-label={`Foto ${i + 1}`} data-punto />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const INTERVALO = 4500;
+
+  document.querySelectorAll<HTMLElement>('[data-pase]').forEach((raiz) => {
+    const fotos = [...raiz.querySelectorAll<HTMLImageElement>(':scope > img')];
+    const rotulos = [...raiz.querySelectorAll<HTMLAnchorElement>('.pase__rotulo')];
+    const puntos = [...raiz.querySelectorAll<HTMLButtonElement>('[data-punto]')];
+    let activa = 0;
+    let reloj: number | undefined;
+
+    // Las fotos se piden recién cuando están por mostrarse.
+    const cargar = (i: number) => {
+      const foto = fotos[(i + fotos.length) % fotos.length];
+      if (!foto.getAttribute('src')) foto.src = foto.dataset.src!;
+    };
+
+    function ir(indice: number) {
+      activa = (indice + fotos.length) % fotos.length;
+      cargar(activa);
+      cargar(activa + 1);
+      fotos.forEach((f, i) => f.classList.toggle('es-activa', i === activa));
+      puntos.forEach((p, i) => p.classList.toggle('es-activa', i === activa));
+      rotulos.forEach((r, i) => {
+        r.classList.toggle('es-activa', i === activa);
+        r.tabIndex = i === activa ? 0 : -1;
+      });
+    }
+
+    const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const frenar = () => clearInterval(reloj);
+    const andar = () => {
+      frenar();
+      if (!sinMovimiento && fotos.length > 1) reloj = window.setInterval(() => ir(activa + 1), INTERVALO);
+    };
+
+    raiz.querySelector('[data-ant]')!.addEventListener('click', () => ir(activa - 1));
+    raiz.querySelector('[data-sig]')!.addEventListener('click', () => ir(activa + 1));
+    puntos.forEach((punto, i) => punto.addEventListener('click', () => ir(i)));
+    raiz.addEventListener('pointerenter', frenar);
+    raiz.addEventListener('pointerleave', andar);
+    raiz.addEventListener('focusin', frenar);
+    raiz.addEventListener('focusout', andar);
+    document.addEventListener('visibilitychange', () => (document.hidden ? frenar() : andar()));
+
+    cargar(1);
+    andar();
+  });
+</script>

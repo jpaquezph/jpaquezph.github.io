@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+import { url } from '../lib/rutas';
+---
+
+<section class="seccion seccion--compacta seccion--borde">
+  <div class="contenedor">
+    <div class="llamado">
+      <div>
+        <span class="antetitulo antetitulo--color">Hablemos</span>
+        <h2 class="llamado__frase">¿Tenés un evento en mente?</h2>
+        <p class="texto-suave">Contame la fecha y la idea, y te paso disponibilidad y presupuesto.</p>
+      </div>
+      <a class="btn btn--lleno" href={url('contacto/')}>Contactar <Icon nombre="flecha" tam={16} /></a>
+    </div>
+  </div>
+</section>

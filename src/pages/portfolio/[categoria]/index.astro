@@ -1,0 +1,72 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Icon from '../../../components/Icon.astro';
+import Llamado from '../../../components/Llamado.astro';
+import Pase from '../../../components/Pase.astro';
+import Portada from '../../../components/Portada.astro';
+import TarjetaAlbum from '../../../components/TarjetaAlbum.astro';
+import { categorias, fotosDePase, urlAlbum, urlCategoria, type Categoria, type Foto } from '../../../lib/galeria';
+import { url } from '../../../lib/rutas';
+
+export function getStaticPaths() {
+  return categorias.map((c) => ({ params: { categoria: c.slug }, props: { categoria: c } }));
+}
+
+interface Props {
+  categoria: Categoria;
+}
+const { categoria } = Astro.props;
+const lugares = 10 - (categoria.pase ? 1 : 0) - categoria.paseSueltas.length;
+const delAlbum = fotosDePase(categoria, lugares).map((p) => ({
+  foto: p.foto,
+  titulo: p.album.nombre,
+  href: urlAlbum(categoria, p.album),
+}));
+// La foto propia de la categoría abre el pase; ella y las sueltas llevan a los proyectos.
+const aProyectos = (foto: Foto) => ({ foto, titulo: categoria.nombre, href: '#proyectos', accion: 'Ver proyectos' });
+const pase = [
+  ...(categoria.pase ? [aProyectos(categoria.pase)] : []),
+  ...delAlbum,
+  ...categoria.paseSueltas.map(aProyectos),
+];
+const cantidad = categoria.albums.length;
+---
+
+<Base titulo={categoria.nombre} descripcion={categoria.texto} activo="portfolio/">
+  <Portada
+    antetitulo="Categoría"
+    titulo={categoria.nombre}
+    texto={categoria.texto}
+    migas={[{ texto: 'Portfolio', href: url('portfolio/') }]}
+  />
+  <section class="seccion seccion--compacta">
+    <div class="contenedor">
+      <nav class="pestanas" aria-label="Categorías">
+        {
+          categorias.map((c) => (
+            <a href={urlCategoria(c)} aria-current={c.slug === categoria.slug ? 'page' : undefined}>
+              <Icon nombre={c.icono} tam={16} />
+              {c.nombre}
+            </a>
+          ))
+        }
+      </nav>
+      <Pase fotos={pase} />
+    </div>
+  </section>
+  <section class="seccion seccion--compacta" id="proyectos" style="padding-top:0">
+    <div class="contenedor">
+      <div class="cabecera-seccion">
+        <div>
+          <span class="antetitulo">{cantidad === 1 ? '1 proyecto' : `${cantidad} proyectos`}</span>
+          <h2 class="titulo">Proyectos</h2>
+        </div>
+      </div>
+      {cantidad === 0 && <p class="texto-suave">Muy pronto vas a encontrar proyectos de esta categoría.</p>}
+      <div class="albums albums--animados">
+        {categoria.albums.map((a, i) => <TarjetaAlbum categoria={categoria} album={a} orden={i} />)}
+      </div>
+    </div>
+  </section>
+  <Llamado />
+</Base>

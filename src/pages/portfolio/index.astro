@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Llamado from '../../components/Llamado.astro';
+import Portada from '../../components/Portada.astro';
+import { categorias, urlCategoria } from '../../lib/galeria';
+import { url } from '../../lib/rutas';
+---
+
+<Base titulo="Portfolio" activo="portfolio/">
+  <Portada
+    antetitulo="Explorá por categoría"
+    titulo="Portfolio"
+    texto={'Cada proyecto guarda una historia distinta.\nPasá, mirá y quedate el tiempo que quieras.'}
+  />
+  <section class="seccion seccion--compacta">
+    <div class="contenedor categorias">
+      {
+        categorias.map((c, i) => {
+          const tapa = c.tarjeta;
+          const cantidad = c.albums.length;
+          return (
+            <a class="categoria" href={urlCategoria(c)} style={`--orden:${i}`}>
+              <img
+                src={url(tapa.thumb)}
+                srcset={`${url(tapa.thumb)} 600w, ${url(tapa.src)} ${tapa.w}w`}
+                sizes="(max-width: 640px) 100vw, 25vw"
+                alt=""
+                width={tapa.w}
+                height={tapa.h}
+                style={`background:${tapa.color}`}
+              />
+              <span class="categoria__rotulo">
+                <Icon nombre={c.icono} tam={30} />
+                <strong>{c.nombre}</strong>
+                <span class="categoria__texto">{c.texto}</span>
+                <span class="categoria__ver">
+                  {cantidad === 1 ? '1 proyecto' : `${cantidad} proyectos`} <Icon nombre="flecha" tam={14} />
+                </span>
+              </span>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+  <Llamado />
+</Base>

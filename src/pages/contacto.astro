@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Portada from '../components/Portada.astro';
+import { sitio } from '../data/site';
+import { categorias } from '../lib/galeria';
+
+// Recuadro del mapa: oeste, sur, este, norte (Rosario).
+const mapa = 'https://www.openstreetmap.org/export/embed.html?bbox=-60.80%2C-33.04%2C-60.58%2C-32.86&layer=mapnik';
+---
+
+<Base titulo="Contacto" activo="contacto/">
+  <Portada
+    antetitulo="Contacto"
+    titulo="Hablemos de tu evento"
+    texto="Contame qué estás organizando y te respondo con disponibilidad y presupuesto."
+  />
+  <section class="seccion">
+    <div class="contenedor dos-columnas">
+      <div>
+        <div class="canales">
+          <a class="canal" href={sitio.instagram} target="_blank" rel="noopener">
+            <Icon nombre="instagram" tam={26} />
+            <strong>Instagram</strong>
+            <span>Últimos trabajos</span>
+          </a>
+          <a class="canal" href={sitio.youtube} target="_blank" rel="noopener">
+            <Icon nombre="youtube" tam={26} />
+            <strong>YouTube</strong>
+            <span>Videos y detrás de escena</span>
+          </a>
+        </div>
+
+        <span class="antetitulo">Consulta</span>
+        <h2 class="titulo" style="margin-bottom:8px">Escribime por WhatsApp</h2>
+        <p class="texto-suave" style="margin-bottom:24px">
+          Completá los datos y se abre WhatsApp con el mensaje armado, listo para enviar.
+        </p>
+        <form class="formulario" data-consulta data-whatsapp={sitio.whatsapp}>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" name="nombre" autocomplete="name" required />
+            </div>
+            <div class="campo">
+              <label for="tipo">Tipo de evento</label>
+              <select id="tipo" name="tipo">
+                {categorias.map((c) => <option>{c.nombre}</option>)}
+                <option>Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="formulario__par">
+            <div class="campo">
+              <label for="fecha">Fecha (opcional)</label>
+              <input id="fecha" name="fecha" type="date" />
+            </div>
+            <div class="campo">
+              <label for="lugar">Lugar (opcional)</label>
+              <input id="lugar" name="lugar" />
+            </div>
+          </div>
+          <div class="campo">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" required></textarea>
+          </div>
+          <div>
+            <button class="btn btn--lleno" type="submit">
+              <Icon nombre="whatsapp" tam={18} /> Enviar por WhatsApp
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="mapa">
+        <iframe src={mapa} title={`Mapa de ${sitio.ciudad}`} loading="lazy"></iframe>
+        <span class="mapa__rotulo"><Icon nombre="pin" tam={16} /> {sitio.ciudad}</span>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const formulario = document.querySelector<HTMLFormElement>('[data-consulta]')!;
+
+  formulario.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const datos = new FormData(formulario);
+    const valor = (campo: string) => String(datos.get(campo) ?? '').trim();
+    const fecha = valor('fecha') ? new Date(`${valor('fecha')}T12:00`).toLocaleDateString('es-AR') : '';
+    const detalle = [
+      `Hola, soy ${valor('nombre')}.`,
+      `Tipo de evento: ${valor('tipo')}`,
+      fecha && `Fecha: ${fecha}`,
+      valor('lugar') && `Lugar: ${valor('lugar')}`,
+    ].filter(Boolean);
+    const texto = `${detalle.join('\n')}\n\n${valor('mensaje')}`;
+    window.open(`https://wa.me/${formulario.dataset.whatsapp}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
+  });
+</script>

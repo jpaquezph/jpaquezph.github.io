@@ -1,0 +1,11 @@
+---
+import { svgIcono } from '../data/iconos';
+
+interface Props {
+  nombre: string;
+  tam?: number;
+}
+const { nombre, tam = 20 } = Astro.props;
+---
+
+<Fragment set:html={svgIcono(nombre, tam)} />

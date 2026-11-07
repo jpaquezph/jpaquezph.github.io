@@ -1,0 +1,30 @@
+---
+import Visor from './Visor.astro';
+import type { Foto } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+interface Props {
+  fotos: Foto[];
+  nombre: string;
+}
+const { fotos, nombre } = Astro.props;
+---
+
+<div class="galeria">
+  {
+    fotos.map((f, i) => (
+      <button type="button" data-visor={url(f.src)} aria-label={`Ampliar foto ${i + 1}`}>
+        <img
+          src={url(f.thumb)}
+          alt={`${nombre}, foto ${i + 1}`}
+          width={f.w}
+          height={f.h}
+          loading={i < 6 ? 'eager' : 'lazy'}
+          decoding="async"
+          style={`background:${f.color}`}
+        />
+      </button>
+    ))
+  }
+</div>
+<Visor />

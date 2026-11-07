@@ -1,0 +1,56 @@
+---
+import '@fontsource-variable/montserrat';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
+import { sitio } from '../data/site';
+import { url } from '../lib/rutas';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  /** Ruta del menú a marcar como actual ('' para inicio). */
+  activo?: string;
+  /** Las páginas privadas no deben aparecer en buscadores. */
+  privada?: boolean;
+}
+const { titulo, descripcion = sitio.descripcion, activo, privada = false } = Astro.props;
+const tituloCompleto = titulo
+  ? `${titulo} · ${sitio.marca} ${sitio.bajada}`
+  : `${sitio.marca} · ${sitio.bajada} en Rosario`;
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="theme-color" content="#06080c" />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    {privada && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <div class="ambiente" aria-hidden="true"><i></i><i></i><i></i></div>
+    <Header activo={activo} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <button class="subir" type="button" aria-label="Volver arriba" data-subir>
+      <Icon nombre="arriba" tam={20} />
+    </button>
+    <script>
+      const subir = document.querySelector<HTMLButtonElement>('[data-subir]')!;
+      const alDesplazar = () => subir.classList.toggle('visible', window.scrollY > window.innerHeight * 0.6);
+      alDesplazar();
+      window.addEventListener('scroll', alDesplazar, { passive: true });
+      subir.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { sitio } from '../data/site';
+import { url } from '../lib/rutas';
+---
+
+<footer class="pie">
+  <div class="contenedor pie__fila">
+    <a class="logo" href={url()} aria-label={`${sitio.marca} ${sitio.bajada}, inicio`}>
+      <img class="logo__marca" src={url('logo.svg')} alt="" width="192" height="187" loading="lazy" />
+      <span class="logo__bajada">{sitio.bajada}</span>
+    </a>
+    <div class="pie__redes">
+      <a href={sitio.instagram} target="_blank" rel="noopener" aria-label="Instagram"><Icon nombre="instagram" tam={18} /></a>
+      <a href={sitio.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Icon nombre="youtube" tam={18} /></a>
+      <a href={`mailto:${sitio.email}`} aria-label="Correo"><Icon nombre="mail" tam={18} /></a>
+    </div>
+    <span>{sitio.ciudad} &nbsp;|&nbsp; © {new Date().getFullYear()}</span>
+  </div>
+</footer>

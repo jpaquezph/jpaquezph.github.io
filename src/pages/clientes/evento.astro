@@ -1,0 +1,210 @@
+---
+import Base from '../../layouts/Base.astro';
+import Visor from '../../components/Visor.astro';
+---
+
+<Base titulo="Tu evento" privada>
+  <div data-evento>
+    <section class="portada portada--lisa">
+      <div class="contenedor"><p>Cargando tu evento…</p></div>
+    </section>
+  </div>
+  <Visor />
+</Base>
+
+<script>
+  import { svgIcono } from '../../data/iconos';
+  import { esDemo, portal, type EventoCliente } from '../../lib/portal';
+  import { url, urlWhatsapp } from '../../lib/rutas';
+
+  const raiz = document.querySelector<HTMLElement>('[data-evento]')!;
+
+  const esc = (texto: string) =>
+    texto.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const pesos = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  const dia = (iso: string) => new Date(`${iso}T12:00`);
+  const fechaLarga = (iso: string) =>
+    dia(iso).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const fechaCorta = (iso: string) => dia(iso).toLocaleDateString('es-AR');
+
+  function cuentaRegresiva(iso: string) {
+    const hoy = new Date();
+    hoy.setHours(12, 0, 0, 0);
+    const dias = Math.round((dia(iso).getTime() - hoy.getTime()) / 86_400_000);
+    if (dias > 1) return `<strong class="degrade">${dias}</strong><span>días para tu evento</span>`;
+    if (dias === 1) return `<strong class="degrade">1</strong><span>día para tu evento</span>`;
+    if (dias === 0) return `<strong class="degrade">Hoy</strong><span>es tu evento</span>`;
+    return '';
+  }
+
+  function pintar(e: EventoCliente) {
+    const pagado = e.precio.pagos.reduce((suma, p) => suma + p.monto, 0);
+    const saldo = e.precio.total - pagado;
+    const datos = [
+      ['calendario', 'Fecha', fechaLarga(e.fecha)],
+      ['reloj', 'Horario acordado', e.horario],
+      ['pin', 'Lugar', [e.lugar, e.direccion].filter(Boolean).join(' · ')],
+      ['camara', 'Servicio', e.paquete],
+    ].filter(([, , valor]) => valor);
+
+    raiz.innerHTML = `
+      <section class="portada${e.bannerUrl ? ' portada--evento' : ' portada--lisa'}">
+        ${e.bannerUrl ? `<img class="portada__foto" src="${esc(e.bannerUrl)}" alt="">` : ''}
+        <div class="contenedor evento__cabecera">
+          <div>
+            <span class="chip">${svgIcono('check', 14)} ${esc(e.estado)}</span>
+            <span class="antetitulo antetitulo--color" style="margin-top:22px">Hola, ${esc(e.cliente)}</span>
+            <h1>${esc(e.titulo)}</h1>
+            <p>Acá tenés todo lo de tu evento en un solo lugar.</p>
+          </div>
+          <div class="cuenta-regresiva">${cuentaRegresiva(e.fecha)}</div>
+        </div>
+      </section>
+
+      <section class="seccion">
+        <div class="contenedor" style="display:grid;gap:18px">
+          ${esDemo ? '<p class="aviso">Modo demostración: estos datos son de ejemplo.</p>' : ''}
+          <dl class="datos">
+            ${datos
+              .map(
+                ([icono, nombre, valor]) => `
+              <div class="dato">${svgIcono(icono, 22)}<div><dt>${nombre}</dt><dd>${esc(valor)}</dd></div></div>`,
+              )
+              .join('')}
+          </dl>
+
+          <div class="tablero">
+            <article class="tarjeta tarjeta--ancha">
+              <h2>${svgIcono('carpeta', 22)} Tus fotos</h2>
+              <p>${esc(e.entrega)}</p>
+              <div class="acciones">
+                ${
+                  e.driveUrl
+                    ? `<a class="btn btn--lleno" href="${esc(e.driveUrl)}" target="_blank" rel="noopener">Abrir carpeta de Google Drive ${svgIcono('flecha', 16)}</a>`
+                    : `<button class="btn" disabled>Todavía no están disponibles</button>`
+                }
+              </div>
+              ${
+                e.destacadas.length
+                  ? `<div class="fotos-destacadas">${e.destacadas
+                      .map(
+                        (f, i) =>
+                          `<button type="button" data-visor="${esc(f.src)}" aria-label="Ampliar foto ${i + 1}"><img src="${esc(f.thumb)}" alt="Foto destacada ${i + 1}" loading="lazy"></button>`,
+                      )
+                      .join('')}</div>`
+                  : ''
+              }
+            </article>
+
+            ${
+              e.lineupEstado === 'a-confirmar'
+                ? `<article class="tarjeta">
+              <h2>${svgIcono('reloj', 22)} Line-up</h2>
+              <p><span class="chip">A confirmar</span></p>
+              <p>Todavía lo estamos definiendo. Cuando esté cerrado lo vas a ver acá.</p>
+            </article>`
+                : e.lineupEstado === 'detallado' && e.cronograma.length
+                  ? `<article class="tarjeta">
+              <h2>${svgIcono('reloj', 22)} Line-up</h2>
+              <ol class="cronograma">
+                ${e.cronograma
+                  .map(
+                    (c) => `
+                  <li><time>${esc(c.hora)}</time><div><strong>${esc(c.titulo)}</strong>${c.detalle ? `<span>${esc(c.detalle)}</span>` : ''}</div></li>`,
+                  )
+                  .join('')}
+              </ol>
+            </article>`
+                  : ''
+            }
+
+            <article class="tarjeta">
+              <h2>${svgIcono('precio', 22)} Precio y pagos</h2>
+              <dl class="importes">
+                <div class="total"><dt>Total</dt><dd>${pesos.format(e.precio.total)}</dd></div>
+                ${e.precio.pagos
+                  .map(
+                    (p) =>
+                      `<div><dt>${esc(p.concepto)} · ${fechaCorta(p.fecha)}</dt><dd>− ${pesos.format(p.monto)}</dd></div>`,
+                  )
+                  .join('')}
+                <div><dt>Saldo${saldo > 0 && e.precio.vencimientoSaldo ? ` · vence el ${fechaCorta(e.precio.vencimientoSaldo)}` : ''}</dt><dd>${pesos.format(saldo)}</dd></div>
+              </dl>
+              <ul class="lista">
+                ${e.precio.incluye.map((item) => `<li>${svgIcono('check', 16)}<span>${esc(item)}</span></li>`).join('')}
+              </ul>
+            </article>
+
+            <article class="tarjeta">
+              <h2>${svgIcono('documento', 22)} Contrato</h2>
+              <p>${e.contratoFirmado ? `Firmado el ${fechaLarga(e.contratoFirmado)}.` : 'Copia del contrato de tu evento.'}</p>
+              <div class="acciones">
+                ${
+                  e.contratoUrl
+                    ? `<a class="btn" href="${esc(e.contratoUrl)}" target="_blank" rel="noopener">${svgIcono('descarga', 16)} Descargar copia (PDF)</a>`
+                    : `<button class="btn" disabled>${svgIcono('descarga', 16)} Copia todavía no cargada</button>`
+                }
+              </div>
+            </article>
+
+            <article class="tarjeta">
+              <h2>${svgIcono('escudo', 22)} Condiciones de contratación</h2>
+              <ol class="condiciones">${e.condiciones.map((c) => `<li>${esc(c)}</li>`).join('')}</ol>
+            </article>
+
+            <article class="tarjeta tarjeta--ancha">
+              <h2>${svgIcono('whatsapp', 22)} ¿Dudas o cambios?</h2>
+              <p>Si necesitás ajustar un horario, sumar algo o cambiar tus datos de acceso, escribime.</p>
+              <div class="acciones">
+                <a class="btn" href="${urlWhatsapp(`Hola, te escribo por mi evento: ${e.titulo}.`)}" target="_blank" rel="noopener">Escribir por WhatsApp ${svgIcono('flecha', 16)}</a>
+                <button class="enlace" type="button" data-salir style="background:none;border:0;cursor:pointer">${svgIcono('salir', 16)} Cerrar sesión</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>`;
+
+    conectarSalida();
+  }
+
+  function conectarSalida() {
+    raiz.querySelector('[data-salir]')!.addEventListener('click', async () => {
+      await portal.salir();
+      location.assign(url('clientes/'));
+    });
+  }
+
+  // Sesión abierta pero sin datos para mostrar: evento todavía no cargado o falla de conexión.
+  function avisar(titulo: string, texto: string) {
+    raiz.innerHTML = `
+      <section class="portada portada--lisa">
+        <div class="contenedor">
+          <h1>${titulo}</h1>
+          <p>${texto}</p>
+          <div class="acciones" style="margin-top:24px">
+            <a class="btn" href="${urlWhatsapp('Hola, no puedo ver la página de mi evento.')}" target="_blank" rel="noopener">Escribir por WhatsApp ${svgIcono('flecha', 16)}</a>
+            <button class="enlace" type="button" data-salir style="background:none;border:0;cursor:pointer">${svgIcono('salir', 16)} Cerrar sesión</button>
+          </div>
+        </div>
+      </section>`;
+    conectarSalida();
+  }
+
+  async function iniciar() {
+    if (!(await portal.sesion())) {
+      location.replace(url('clientes/'));
+      return;
+    }
+    const evento = await portal.evento();
+    if (!evento && (await portal.esAdmin())) {
+      location.replace(url('clientes/admin/'));
+      return;
+    }
+    if (evento) pintar(evento);
+    else avisar('Tu evento todavía no está cargado', 'En cuanto esté listo lo vas a ver acá. Si ya debería estar, escribime.');
+  }
+
+  iniciar().catch(() =>
+    avisar('No se pudo cargar tu evento', 'Revisá tu conexión y volvé a intentar en unos minutos.'),
+  );
+</script>

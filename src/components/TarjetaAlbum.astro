@@ -1,0 +1,23 @@
+---
+import type { Album, Categoria } from '../lib/galeria';
+import { urlAlbum } from '../lib/galeria';
+import { url } from '../lib/rutas';
+
+interface Props {
+  categoria: Categoria;
+  album: Album;
+  /** Posición en la grilla, para escalonar la animación de entrada. */
+  orden?: number;
+}
+const { categoria, album, orden = 0 } = Astro.props;
+const tapa = album.fotos[0];
+---
+
+<a class="album" href={urlAlbum(categoria, album)} style={`--orden:${orden}`}>
+  <img src={url(tapa.thumb)} alt="" width={tapa.w} height={tapa.h} loading="lazy" style={`background:${tapa.color}`} />
+  <span class="album__rotulo">
+    <strong>{album.nombre}</strong>
+    {album.descripcion && <em>{album.descripcion}</em>}
+    <span>{album.fotos.length} fotos</span>
+  </span>
+</a>

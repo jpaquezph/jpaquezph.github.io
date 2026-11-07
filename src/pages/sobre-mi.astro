@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Llamado from '../components/Llamado.astro';
+import Portada from '../components/Portada.astro';
+import { cualidades, portada, sitio, sobreMi } from '../data/site';
+import { url } from '../lib/rutas';
+
+const retrato = portada.sobreMi;
+const recorrido = [
+  { titulo: 'Experiencia en fotografía', icono: 'camara', items: sobreMi.experiencia },
+  { titulo: 'Formación y reconocimientos', icono: 'documento', items: sobreMi.formacion },
+];
+---
+
+<Base titulo="Sobre mí" activo="sobre-mi/">
+  <Portada
+    antetitulo="Sobre mí"
+    titulo={`Hola, soy ${sitio.nombre}`}
+    texto={`Fotógrafo de eventos en ${sitio.ciudad}.`}
+  />
+  <section class="seccion seccion--compacta">
+    <div class="contenedor dos-columnas">
+      <img class="sobre-mi__foto" src={url(retrato.src)} alt={sitio.nombreCompleto} width={retrato.w} height={retrato.h} />
+      <div class="prosa">
+        <h2>{sitio.nombreCompleto}</h2>
+        {sobreMi.perfil.map((parrafo) => <p>{parrafo}</p>)}
+        <div>
+          <a class="btn btn--lleno" href={url('contacto/')}>Hablemos de tu evento <Icon nombre="flecha" tam={16} /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="seccion seccion--compacta seccion--borde">
+    <div class="contenedor">
+      <span class="antetitulo">Recorrido</span>
+      <h2 class="titulo" style="margin-bottom:24px">Mi camino en la fotografía</h2>
+      <div class="tablero" style="align-items:stretch">
+        {
+          recorrido.map((bloque) => (
+            <article class="tarjeta">
+              <h2>
+                <Icon nombre={bloque.icono} tam={22} /> {bloque.titulo}
+              </h2>
+              <ul class="recorrido">
+                {bloque.items.map((item) => (
+                  <li>
+                    {item.periodo && <small>{item.periodo}</small>}
+                    <strong>{item.titulo}</strong>
+                    <span>{item.lugar}</span>
+                    {item.detalle && <span>{item.detalle}</span>}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <section class="seccion seccion--compacta seccion--borde">
+    <div class="contenedor">
+      <span class="antetitulo">Cómo trabajo</span>
+      <h2 class="titulo" style="margin-bottom:24px">Lo que podés esperar</h2>
+      <dl class="datos">
+        {
+          cualidades.map((c) => (
+            <div class="dato">
+              <Icon nombre={c.icono} tam={26} />
+              <div>
+                <dt>{c.titulo}</dt>
+                <dd class="texto-suave" style="font-weight:400">{c.texto}</dd>
+              </div>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+  <Llamado />
+</Base>
