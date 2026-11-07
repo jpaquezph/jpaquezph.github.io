@@ -18,6 +18,8 @@ export interface Album {
   fotos: Foto[];
   /** Fotos propias para el pase de la categoría (carpeta "Banner" del proyecto). */
   banners?: Foto[];
+  /** Foto de la tarjeta del álbum. */
+  tapa?: Foto;
 }
 
 export interface Categoria {
@@ -62,6 +64,7 @@ export const categorias: Categoria[] = [...importadas, ...sinFotos].map(
         nombre: propio?.titulo ?? album.nombre,
         descripcion: propio?.descripcion ?? '',
         banners: meta?.banners?.[album.slug] ?? album.banners,
+        tapa: album.fotos[(propio?.tapa ?? 1) - 1] ?? album.fotos[0],
       };
     });
     const propias = (meta?.coverflow ?? [])

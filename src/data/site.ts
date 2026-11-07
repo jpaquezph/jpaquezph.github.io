@@ -142,7 +142,8 @@ export const categoriasMeta: Record<
 
 // Nombre y bajada con que se muestra cada proyecto, por "categoria/carpeta" (en slug).
 // Los que no figuran acá se muestran con el nombre de su carpeta.
-export const albumesMeta: Record<string, { titulo: string; descripcion: string }> = {
+// `tapa` (opcional): número de foto del álbum que va en su tarjeta; si no está, la primera.
+export const albumesMeta: Record<string, { titulo: string; descripcion: string; tapa?: number }> = {
   'recitales/destino-casual-teatro-vorterix': { titulo: 'Destino Casual', descripcion: 'Teatro Vorterix.' },
   'recitales/ateneo-cultural': { titulo: 'Festival Amiguero', descripcion: 'Ateneo Cultural Néstor Kirchner.' },
   'eventos/sagrado-corazon': { titulo: 'Graduación Sagrado Corazón', descripcion: 'Salón Metropolitano.' },
@@ -154,7 +155,7 @@ export const albumesMeta: Record<string, { titulo: string; descripcion: string }
     titulo: 'Sesión pre bautismo Facu',
     descripcion: 'Parque Independencia, Rosario.',
   },
-  'productos/bijouterie': { titulo: 'Bijouterie', descripcion: '' },
+  'productos/bijouterie': { titulo: 'Bijouterie', descripcion: '', tapa: 9 },
   'sesiones/hermanos-solis': { titulo: 'Hermanos Solís', descripcion: 'Rosedal del Parque Independencia, Rosario.' },
   'sesiones/abi-sesion-exterior': {
     titulo: 'Abi · 15 años',

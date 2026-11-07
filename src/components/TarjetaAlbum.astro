@@ -10,7 +10,7 @@ interface Props {
   orden?: number;
 }
 const { categoria, album, orden = 0 } = Astro.props;
-const tapa = album.fotos[0];
+const tapa = album.tapa ?? album.fotos[0];
 ---
 
 <a class="album" href={urlAlbum(categoria, album)} style={`--orden:${orden}`}>
