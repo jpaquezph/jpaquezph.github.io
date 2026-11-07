@@ -1606,6 +1606,32 @@ h3 {
   opacity: 0.75;
 }
 
+.siguiente-album__corto {
+  display: none;
+}
+
+/* En celular, botones chicos uno al lado del otro: solo la flecha y "Anterior" / "Siguiente". */
+@media (max-width: 640px) {
+  .siguiente-album {
+    flex-wrap: nowrap;
+  }
+
+  .siguiente-album .btn,
+  .siguiente-album .siguiente-album__ant {
+    gap: 10px;
+    padding: 10px 18px;
+    font-size: 10px;
+  }
+
+  .siguiente-album__texto {
+    display: none;
+  }
+
+  .siguiente-album__corto {
+    display: inline;
+  }
+}
+
 .galeria button {
   display: block;
   width: 100%;

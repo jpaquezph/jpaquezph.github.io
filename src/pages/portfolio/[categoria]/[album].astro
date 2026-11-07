@@ -46,7 +46,7 @@ const rotulo = (vecino: (typeof todos)[number], enCategoria: string, palabra: st
       {
         siguiente && anterior && (
           <nav class="siguiente-album" aria-label="Otros proyectos">
-            <a class="btn siguiente-album__ant" href={urlAlbum(anterior.categoria, anterior.album)}>
+            <a class="btn siguiente-album__ant" href={urlAlbum(anterior.categoria, anterior.album)} aria-label={`Proyecto anterior: ${anterior.album.nombre}`}>
               <span class="siguiente-album__flecha-izq">
                 <Icon nombre="flecha" tam={18} />
               </span>
@@ -54,12 +54,14 @@ const rotulo = (vecino: (typeof todos)[number], enCategoria: string, palabra: st
                 <span class="siguiente-album__ante">{rotulo(anterior, 'Proyecto anterior', 'Anterior')}</span>
                 {anterior.album.nombre}
               </span>
+              <span class="siguiente-album__corto">Anterior</span>
             </a>
-            <a class="btn siguiente-album__sig" href={urlAlbum(siguiente.categoria, siguiente.album)}>
+            <a class="btn siguiente-album__sig" href={urlAlbum(siguiente.categoria, siguiente.album)} aria-label={`Siguiente proyecto: ${siguiente.album.nombre}`}>
               <span class="siguiente-album__texto">
                 <span class="siguiente-album__ante">{rotulo(siguiente, 'Siguiente proyecto', 'Siguiente')}</span>
                 {siguiente.album.nombre}
               </span>
+              <span class="siguiente-album__corto">Siguiente</span>
               <Icon nombre="flecha" tam={18} />
             </a>
           </nav>
