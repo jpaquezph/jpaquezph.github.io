@@ -1,6 +1,12 @@
 ---
 import AdminCabecera from '../../components/AdminCabecera.astro';
 import Base from '../../layouts/Base.astro';
+import { categorias } from '../../lib/galeria';
+
+// Nombre de cada álbum por su dirección, para mostrarlo en los rankings.
+const nombres = Object.fromEntries(
+  categorias.flatMap((c) => c.albums.map((a) => [`/portfolio/${c.slug}/${a.slug}/`, `${a.nombre} · ${c.nombre}`])),
+);
 ---
 
 <Base titulo="Métricas" privada>
@@ -19,7 +25,7 @@ import Base from '../../layouts/Base.astro';
         <a href="#90" data-dias="90">90 días</a>
         <a href="#365" data-dias="365">Un año</a>
       </nav>
-      <div data-metricas><p class="nota">Cargando…</p></div>
+      <div data-metricas data-nombres={JSON.stringify(nombres)}><p class="nota">Cargando…</p></div>
     </div>
   </section>
 </Base>
@@ -38,6 +44,11 @@ import Base from '../../layouts/Base.astro';
     paginas: { ruta: string; visitas: number }[];
     referentes: { referente: string; visitas: number }[];
     dispositivos: { dispositivo: string; visitas: number }[];
+    albumes: { ruta: string; visitas: number; visitantes: number }[];
+    clics: number;
+    contactaron: number;
+    porDestino: { destino: string; clics: number }[];
+    clicsPorPagina: { ruta: string; clics: number }[];
   }
 
   const panel = document.querySelector<HTMLElement>('[data-admin]')!;
@@ -47,14 +58,26 @@ import Base from '../../layouts/Base.astro';
   const fechaCorta = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', timeZone: 'UTC' });
   const fechaLarga = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 
+  const nombresAlbum: Record<string, string> = JSON.parse(zona.dataset.nombres ?? '{}');
+
   // Nombre legible de cada página.
   function nombrePagina(ruta: string) {
     if (ruta === '/' || ruta === '') return 'Inicio';
+    if (nombresAlbum[ruta]) return `Álbum: ${nombresAlbum[ruta]}`;
     const partes = ruta.split('/').filter(Boolean).map((p) => decodeURIComponent(p).replace(/-/g, ' '));
     const [primera, ...resto] = partes;
     const base = { portfolio: 'Portfolio', 'sobre mi': 'Sobre mí', contacto: 'Contacto' }[primera] ?? primera;
     return [base, ...resto.map((p) => p.charAt(0).toUpperCase() + p.slice(1))].join(' › ');
   }
+  const nombreDestino = (d: string) =>
+    ({
+      whatsapp: 'WhatsApp (botón)',
+      formulario: 'Formulario de Contacto (WhatsApp)',
+      instagram: 'Instagram',
+      youtube: 'YouTube',
+      email: 'Mail',
+      contacto: 'Botón "Contactar"',
+    })[d] ?? d;
   const nombreDispositivo = (d: string) => ({ celular: 'Celular', tablet: 'Tablet', compu: 'Compu' })[d] ?? 'Otro';
 
   function tile(valor: number, etiqueta: string, nota?: string) {
@@ -155,19 +178,24 @@ import Base from '../../layouts/Base.astro';
 
   function pintar(m: Metricas) {
     const visitasPorVisitante = m.visitantes ? (m.visitas / m.visitantes).toFixed(1).replace('.', ',') : '0';
+    const porcentaje = m.visitantes ? Math.round((m.contactaron / m.visitantes) * 1000) / 10 : 0;
+    const sinVisitas = 'Todavía no hay visitas.';
+    const sinClics = 'Todavía nadie tocó un enlace de contacto en este período.';
     zona.replaceChildren(
       h('div', { class: 'metricas' },
         tile(m.visitas, 'Visitas', `en ${m.dias === 365 ? 'el último año' : `los últimos ${m.dias} días`}`),
         tile(m.visitantes, 'Visitantes', `${visitasPorVisitante} páginas por visitante`),
         tile(m.hoy, 'Visitas hoy'),
+        tile(m.clics, 'Contactos', `${String(porcentaje).replace('.', ',')}% de los visitantes tocó un contacto`),
       ),
       graficoDias(m.porDia),
-      h('div', { class: 'tablero' },
-        ranking('Páginas más vistas', m.paginas.map((p) => ({ nombre: nombrePagina(p.ruta), visitas: p.visitas })), 'Todavía no hay visitas.'),
-        h('div', { style: 'display:grid;gap:18px' },
-          ranking('De dónde llegan', m.referentes.map((r) => ({ nombre: r.referente === 'directo' ? 'Directo (escribieron la dirección o un enlace sin origen)' : r.referente, visitas: r.visitas })), 'Todavía no hay visitas.'),
-          ranking('Dispositivo', m.dispositivos.map((d) => ({ nombre: nombreDispositivo(d.dispositivo), visitas: d.visitas })), 'Todavía no hay visitas.'),
-        ),
+      h('div', { class: 'tablero tablero--metricas' },
+        ranking('Contactos por canal', m.porDestino.map((d) => ({ nombre: nombreDestino(d.destino), visitas: d.clics })), sinClics),
+        ranking('Desde qué página contactan', m.clicsPorPagina.map((p) => ({ nombre: nombrePagina(p.ruta), visitas: p.clics })), sinClics),
+        ranking('Álbumes más vistos', m.albumes.map((a) => ({ nombre: nombresAlbum[a.ruta] ?? nombrePagina(a.ruta), visitas: a.visitas })), sinVisitas),
+        ranking('Páginas más vistas', m.paginas.map((p) => ({ nombre: nombrePagina(p.ruta), visitas: p.visitas })), sinVisitas),
+        ranking('De dónde llegan', m.referentes.map((r) => ({ nombre: r.referente === 'directo' ? 'Directo (escribieron la dirección o un enlace sin origen)' : r.referente, visitas: r.visitas })), sinVisitas),
+        ranking('Dispositivo', m.dispositivos.map((d) => ({ nombre: nombreDispositivo(d.dispositivo), visitas: d.visitas })), sinVisitas),
       ),
     );
   }
@@ -187,8 +215,14 @@ import Base from '../../layouts/Base.astro';
         : `No se pudieron leer las métricas: ${error.message}`;
       return;
     }
-    mensaje.hidden = true;
-    pintar(data as Metricas);
+    const m = data as Metricas;
+    if (m.clics === undefined) {
+      mensaje.hidden = false;
+      mensaje.dataset.tipo = 'info';
+      mensaje.textContent = 'Para ver los contactos y los álbumes más vistos, volvé a ejecutar supabase/metricas.sql en Supabase.';
+      Object.assign(m, { albumes: [], clics: 0, contactaron: 0, porDestino: [], clicsPorPagina: [] });
+    } else mensaje.hidden = true;
+    pintar(m);
   }
 
   document.querySelector('[data-periodos]')!.addEventListener('click', (e) => {

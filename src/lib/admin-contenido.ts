@@ -93,6 +93,8 @@ export interface EstadoPublicacion {
   commit?: string;
   cuando?: string;
   enlace?: string;
+  /** Vencimiento de la llave de GitHub, como lo informa GitHub: "2027-11-06 00:00:00 UTC". */
+  vencimientoLlave?: string | null;
 }
 
 export const estadoPublicacion = () => llamar<EstadoPublicacion>({ accion: 'estado' });

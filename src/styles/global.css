@@ -2865,3 +2865,79 @@ fieldset.con-error > .error {
   border-radius: 3px;
   background: linear-gradient(90deg, var(--rosa) var(--valor), rgb(255 255 255 / 0.06) var(--valor));
 }
+
+.tablero--metricas {
+  margin-top: 18px;
+}
+
+.tablero--metricas > .tarjeta {
+  align-self: stretch;
+}
+
+/* Panel: avisos y respaldo ------------------------------------------------ */
+
+.avisos {
+  margin-bottom: 28px;
+}
+
+.avisos__lista {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aviso-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--linea);
+  border-left-width: 3px;
+  border-radius: 6px;
+  background: var(--fondo);
+  font-size: 13px;
+}
+
+.aviso-item > span:nth-child(2) {
+  flex: 1 1 260px;
+}
+
+.aviso-item__nivel {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Cada nivel lleva su palabra escrita: el color no es lo único que lo distingue. */
+.aviso-item--urgente {
+  border-left-color: #ff6b6b;
+}
+
+.aviso-item--urgente .aviso-item__nivel {
+  color: #ff9c9c;
+}
+
+.aviso-item--atencion {
+  border-left-color: var(--naranja);
+}
+
+.aviso-item--atencion .aviso-item__nivel {
+  color: var(--naranja);
+}
+
+.aviso-item--info {
+  border-left-color: rgb(255 255 255 / 0.25);
+}
+
+.aviso-item--info .aviso-item__nivel {
+  color: var(--suave);
+}
+
+.respaldo {
+  margin-top: 28px;
+}

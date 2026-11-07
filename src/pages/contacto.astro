@@ -81,6 +81,8 @@ const mapa = 'https://www.openstreetmap.org/export/embed.html?bbox=-60.80%2C-33.
 </Base>
 
 <script>
+  import { registrarClic } from '../lib/visitas';
+
   const formulario = document.querySelector<HTMLFormElement>('[data-consulta]')!;
 
   formulario.addEventListener('submit', (e) => {
@@ -95,6 +97,7 @@ const mapa = 'https://www.openstreetmap.org/export/embed.html?bbox=-60.80%2C-33.
       valor('lugar') && `Lugar: ${valor('lugar')}`,
     ].filter(Boolean);
     const texto = `${detalle.join('\n')}\n\n${valor('mensaje')}`;
+    registrarClic('formulario');
     window.open(`https://wa.me/${formulario.dataset.whatsapp}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
   });
 </script>

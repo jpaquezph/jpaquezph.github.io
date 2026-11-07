@@ -13,11 +13,30 @@ import { bannerCliente as BANNER, precios } from '../../data/site';
       <p class="aviso" data-mensaje hidden style="margin-bottom:18px"></p>
 
       <div data-vista="lista">
+        <section class="tarjeta avisos" data-avisos hidden>
+          <h2><Icon nombre="reloj" tam={22} /> Avisos</h2>
+          <ul class="avisos__lista" data-lista-avisos></ul>
+        </section>
+
         <div class="cabecera-seccion">
           <h2 class="titulo">Clientes</h2>
           <button class="btn btn--lleno" type="button" data-nuevo>Nuevo cliente</button>
         </div>
         <div class="admin-lista" data-lista></div>
+
+        <section class="tarjeta formulario respaldo">
+          <h2><Icon nombre="descarga" tam={22} /> Respaldo</h2>
+          <p class="nota">
+            Supabase gratis no guarda copias de seguridad. Bajá un respaldo de vez en cuando (por ejemplo, una vez por mes) y
+            guardalo en otro lado. El respaldo completo tiene todos los datos de cada evento; la planilla se abre con Excel.
+            Los archivos (contratos y fotos) siguen en Supabase: el respaldo anota cuáles son.
+          </p>
+          <div class="acciones">
+            <button class="btn" type="button" data-respaldo>Bajar respaldo completo</button>
+            <button class="btn" type="button" data-planilla>Bajar planilla (Excel)</button>
+            <span class="nota" data-estado-respaldo></span>
+          </div>
+        </section>
       </div>
 
       <form class="formulario" data-vista="ficha" hidden novalidate autocomplete="off">
@@ -272,6 +291,10 @@ import { bannerCliente as BANNER, precios } from '../../data/site';
   import { descargarResumen } from '../../lib/resumen-pdf';
   import { url } from '../../lib/rutas';
   import { exigirAdmin } from '../../lib/admin-sesion';
+  import { avisoDeLlave, avisosDeClientes, avisosDeContenido, ordenar, type Aviso, type EventoParaAvisos } from '../../lib/admin-avisos';
+  import { estadoPublicacion, leerEstado } from '../../lib/admin-contenido';
+  import { descargarPlanilla, descargarRespaldo } from '../../lib/admin-respaldo';
+  import { cliente as supabaseCliente } from '../../lib/supabase';
 
   const panel = document.querySelector<HTMLElement>('[data-admin]')!;
   const $ = <T extends HTMLElement>(selector: string) => panel.querySelector<T>(selector)!;
@@ -791,7 +814,70 @@ import { bannerCliente as BANNER, precios } from '../../data/site';
   });
 
   // Solo el administrador puede ver el panel; el resto vuelve al ingreso.
+  // --- Avisos ---
+
+  async function pintarAvisos() {
+    const caja = document.querySelector<HTMLElement>('[data-avisos]')!;
+    const ul = document.querySelector<HTMLElement>('[data-lista-avisos]')!;
+    const avisos: Aviso[] = [];
+    // Cada fuente es independiente: si una falla, se muestran las demás.
+    const [eventos, estado, publicacion] = await Promise.allSettled([
+      supabaseCliente.from('eventos').select('usuario, cliente, titulo, fecha, precio_total, pagos, vencimiento_saldo, drive_url'),
+      leerEstado(),
+      estadoPublicacion(),
+    ]);
+    if (eventos.status === 'fulfilled' && !eventos.value.error) avisos.push(...avisosDeClientes(eventos.value.data as EventoParaAvisos[]));
+    if (estado.status === 'fulfilled') avisos.push(...avisosDeContenido(estado.value));
+    const llave = publicacion.status === 'fulfilled'
+      ? avisoDeLlave(publicacion.value.vencimientoLlave)
+      : /GitHub|GH_TOKEN|llave/i.test(String(publicacion.reason?.message)) ? avisoDeLlave(null, publicacion.reason.message) : null;
+    if (llave) avisos.push(llave);
+    const ordenados = ordenar(avisos);
+    caja.hidden = !ordenados.length;
+    ul.replaceChildren(
+      ...ordenados.map((a) => {
+        const li = document.createElement('li');
+        li.className = `aviso-item aviso-item--${a.nivel}`;
+        const etiqueta = document.createElement('span');
+        etiqueta.className = 'aviso-item__nivel';
+        etiqueta.textContent = { urgente: 'Urgente', atencion: 'Atención', info: 'Para revisar' }[a.nivel];
+        const texto = document.createElement('span');
+        texto.textContent = a.texto;
+        li.append(etiqueta, texto);
+        if (a.enlace) {
+          const enlace = document.createElement('a');
+          enlace.className = 'enlace';
+          enlace.href = a.enlace.ruta.startsWith('http') ? a.enlace.ruta : url(a.enlace.ruta);
+          if (a.enlace.ruta.startsWith('http')) Object.assign(enlace, { target: '_blank', rel: 'noopener' });
+          enlace.textContent = a.enlace.texto;
+          li.append(enlace);
+        }
+        return li;
+      }),
+    );
+  }
+
+  // --- Respaldo ---
+
+  const estadoRespaldo = document.querySelector<HTMLElement>('[data-estado-respaldo]')!;
+  async function respaldar(boton: HTMLButtonElement, accion: () => Promise<number>) {
+    boton.disabled = true;
+    estadoRespaldo.textContent = 'Preparando…';
+    try {
+      const n = await accion();
+      estadoRespaldo.textContent = `Listo: ${n} evento${n === 1 ? '' : 's'}. Revisá la carpeta Descargas.`;
+    } catch (e) {
+      estadoRespaldo.textContent = e instanceof Error ? e.message : String(e);
+    } finally {
+      boton.disabled = false;
+    }
+  }
+  document.querySelector<HTMLButtonElement>('[data-respaldo]')!.addEventListener('click', (e) => respaldar(e.currentTarget as HTMLButtonElement, descargarRespaldo));
+  document.querySelector<HTMLButtonElement>('[data-planilla]')!.addEventListener('click', (e) => respaldar(e.currentTarget as HTMLButtonElement, descargarPlanilla));
+
   exigirAdmin(panel).then((admin) => {
-    if (admin) ejecutar(mostrarLista, mensaje);
+    if (!admin) return;
+    ejecutar(mostrarLista, mensaje);
+    pintarAvisos().catch(() => {});
   });
 </script>

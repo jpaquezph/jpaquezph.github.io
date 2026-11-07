@@ -53,7 +53,9 @@ class ErrorGitHub extends Error {
 }
 
 function github(token: string, repo: string) {
-  return async function llamar<T = any>(ruta: string, opciones: { metodo?: string; cuerpo?: unknown; crudo?: boolean } = {}) {
+  // GitHub informa en cada respuesta cuándo vence la llave ("2027-11-06 00:00:00 UTC").
+  const datos = { vencimiento: '' };
+  const llamar = async function llamar<T = any>(ruta: string, opciones: { metodo?: string; cuerpo?: unknown; crudo?: boolean } = {}) {
     const respuesta = await fetch(`https://api.github.com/repos/${repo}${ruta}`, {
       method: opciones.metodo ?? 'GET',
       headers: {
@@ -65,12 +67,14 @@ function github(token: string, repo: string) {
       },
       body: opciones.cuerpo ? JSON.stringify(opciones.cuerpo) : undefined,
     });
+    datos.vencimiento = respuesta.headers.get('github-authentication-token-expiration') ?? datos.vencimiento;
     if (!respuesta.ok) {
       const detalle = await respuesta.text().catch(() => '');
       throw new ErrorGitHub(`GitHub respondió ${respuesta.status}: ${detalle.slice(0, 200)}`, respuesta.status);
     }
     return (opciones.crudo ? await respuesta.text() : await respuesta.json()) as T;
   };
+  return Object.assign(llamar, { datos });
 }
 
 const esObjeto = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -230,10 +234,11 @@ Deno.serve(async (pedido) => {
         workflow_runs: { status: string; conclusion: string | null; head_sha: string; updated_at: string; html_url: string }[];
       }>(`/actions/runs?branch=${rama}&per_page=1`);
       const ultima = corridas[0];
+      const vencimientoLlave = gh.datos.vencimiento || null;
       return responder(
         ultima
-          ? { estado: ultima.status, resultado: ultima.conclusion, commit: ultima.head_sha, cuando: ultima.updated_at, enlace: ultima.html_url }
-          : { estado: 'sin-datos' },
+          ? { estado: ultima.status, resultado: ultima.conclusion, commit: ultima.head_sha, cuando: ultima.updated_at, enlace: ultima.html_url, vencimientoLlave }
+          : { estado: 'sin-datos', vencimientoLlave },
       );
     }
 
