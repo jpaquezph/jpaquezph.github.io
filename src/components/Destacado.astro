@@ -14,16 +14,23 @@ const dos = (n: number) => String(n).padStart(2, '0');
   cat && album && fotos.length > 0 && (
     <div class="destacado" data-destacado>
       <div class="destacado__visor">
+        {/* Solo se baja la foto que se ve (y la que sigue, la pone el script); en
+            celular, la versión chica. */}
         {fotos.map((f, i) => (
-          <img
-            class:list={{ 'es-activa': i === 0 }}
-            src={url(f.src)}
-            alt={`${destacado.titulo}, foto ${i + 1}`}
-            width={f.w}
-            height={f.h}
-            loading="lazy"
-            style={`background:${f.color}`}
-          />
+          <picture>
+            <source media="(max-width: 900px)" srcset={i === 0 ? url(f.thumb) : undefined} data-srcset={url(f.thumb)} />
+            <img
+              class:list={{ 'es-activa': i === 0 }}
+              src={i === 0 ? url(f.src) : undefined}
+              data-src={url(f.src)}
+              data-thumb={url(f.thumb)}
+              alt={`${destacado.titulo}, foto ${i + 1}`}
+              width={f.w}
+              height={f.h}
+              loading="lazy"
+              style={`background:${f.color}`}
+            />
+          </picture>
         ))}
         <button class="destacado__flecha" type="button" aria-label="Foto anterior" data-ant>
           <Icon nombre="izquierda" tam={26} />
@@ -45,9 +52,9 @@ const dos = (n: number) => String(n).padStart(2, '0');
         </a>
       </div>
       <div class="destacado__minis">
-        {fotos.slice(0, 3).map((f, i) => (
+        {fotos.slice(0, 3).map((_, i) => (
           <button type="button" aria-label={`Ver foto ${i + 1}`} data-mini>
-            <img src={url(f.thumb)} alt="" width={f.w} height={f.h} loading="lazy" />
+            <img src={url(fotos[(i + 1) % fotos.length].thumb)} alt="" width={fotos[0].w} height={fotos[0].h} loading="lazy" />
           </button>
         ))}
       </div>
@@ -63,11 +70,21 @@ const dos = (n: number) => String(n).padStart(2, '0');
     const minis = [...raiz.querySelectorAll<HTMLButtonElement>('[data-mini]')];
     const actual = raiz.querySelector<HTMLElement>('[data-actual]')!;
     const progreso = raiz.querySelector<HTMLElement>('[data-progreso]')!;
-    const origenes = fotos.map((f) => f.src.replace(/\.webp$/, '-m.webp'));
+    const origenes = fotos.map((f) => f.dataset.thumb!);
     let activa = 0;
+
+    function cargar(i: number) {
+      const foto = fotos[i];
+      if (foto.getAttribute('src')) return;
+      const fuente = foto.previousElementSibling as HTMLSourceElement | null;
+      if (fuente?.dataset.srcset) fuente.srcset = fuente.dataset.srcset;
+      foto.src = foto.dataset.src!;
+    }
 
     function ir(indice: number) {
       activa = (indice + fotos.length) % fotos.length;
+      cargar(activa);
+      cargar((activa + 1) % fotos.length);
       fotos.forEach((f, i) => f.classList.toggle('es-activa', i === activa));
       actual.textContent = String(activa + 1).padStart(2, '0');
       progreso.style.width = `${((activa + 1) / fotos.length) * 100}%`;

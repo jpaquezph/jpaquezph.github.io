@@ -30,16 +30,21 @@ const tarjetas = Array.from({ length: vueltas }, (_, vuelta) =>
     {
       tarjetas.map((t) => (
         <a class="cf__tarjeta" href={t.href} data-titulo={t.titulo} data-texto={t.texto} draggable="false">
-          <img
-            src={url(t.foto.thumb)}
-            srcset={`${url(t.foto.thumb)} 800w, ${url(t.foto.src)} ${t.foto.w}w`}
-            sizes="(max-width: 640px) 72vw, 40vw"
-            alt=""
-            width={t.foto.w}
-            height={t.foto.h}
-            style={`background:${t.foto.color}`}
-            draggable="false"
-          />
+          {/* En celular siempre la versión chica: con pantallas de alta densidad el
+              navegador elegía la grande (≈170 KB cada una, diez tarjetas). */}
+          <picture>
+            <source media="(max-width: 640px)" srcset={url(t.foto.thumb)} />
+            <img
+              src={url(t.foto.thumb)}
+              srcset={`${url(t.foto.thumb)} 800w, ${url(t.foto.src)} ${t.foto.w}w`}
+              sizes="40vw"
+              alt=""
+              width={t.foto.w}
+              height={t.foto.h}
+              style={`background:${t.foto.color}`}
+              draggable="false"
+            />
+          </picture>
           <span class="cf__rotulo">
             <Icon nombre={t.icono} tam={26} />
             {t.titulo}

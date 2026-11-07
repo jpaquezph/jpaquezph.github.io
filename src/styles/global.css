@@ -775,6 +775,11 @@ h3 {
   pointer-events: none;
 }
 
+.cf__tarjeta picture,
+.destacado__visor picture {
+  display: contents;
+}
+
 .cf__tarjeta img {
   width: 100%;
   height: 100%;
