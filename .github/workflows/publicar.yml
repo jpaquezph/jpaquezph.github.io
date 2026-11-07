@@ -54,3 +54,6 @@ jobs:
     steps:
       - id: publicacion
         uses: actions/deploy-pages@v4
+        with:
+          # Con muchas fotos, GitHub puede tardar más de los 10 minutos que espera por defecto.
+          timeout: 1800000
