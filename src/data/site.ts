@@ -145,7 +145,7 @@ export const categoriasMeta: Record<
 // `tapa` (opcional): número de foto del álbum que va en su tarjeta; si no está, la primera.
 export const albumesMeta: Record<string, { titulo: string; descripcion: string; tapa?: number }> = {
   'recitales/destino-casual-teatro-vorterix': { titulo: 'Destino Casual', descripcion: 'Teatro Vorterix.' },
-  'recitales/ateneo-cultural': { titulo: 'Festival Amiguero', descripcion: 'Ateneo Cultural Néstor Kirchner.' },
+  'recitales/ateneo-cultural': { titulo: 'Festival Amiguero', descripcion: 'Ateneo Cultural Néstor Kirchner.', tapa: 2 },
   'eventos/sagrado-corazon': { titulo: 'Graduación Sagrado Corazón', descripcion: 'Salón Metropolitano.' },
   'eventos/streetcar-meet-3ra-edicion': {
     titulo: 'StreetCar Meet 3ra edición',
