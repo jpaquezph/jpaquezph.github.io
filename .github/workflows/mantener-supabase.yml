@@ -1,0 +1,33 @@
+# Aviso automático (keep-alive): el plan gratis de Supabase pausa el proyecto si
+# pasa una semana sin actividad en la base. Cada 2 días se hace una consulta mínima.
+#
+# Usa la función que registra las visitas, pero con una dirección de /clientes/,
+# que la base descarta sin guardar nada: la base trabaja y las métricas no cambian.
+# La URL y la clave "publishable" son públicas por diseño (están en src/data/site.ts).
+#
+# Ojo: GitHub apaga las tareas programadas de un repositorio público después de 60
+# días sin commits. Cada cambio hecho desde el panel cuenta como commit.
+name: Mantener activo Supabase
+
+on:
+  schedule:
+    - cron: '17 12 */2 * *' # cada 2 días, 9:17 de Argentina
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  latido:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consulta mínima a la base
+        env:
+          URL: https://jfuhhybljhzjslvzjzrm.supabase.co
+          CLAVE: sb_publishable_RFyn5LwiGcvYBHJywyBszw_8HPhm9OT
+        run: |
+          estado=$(curl -s -o /dev/null -w '%{http_code}' -m 30 -X POST "$URL/rest/v1/rpc/registrar_visita" \
+            -H "apikey: $CLAVE" -H 'Content-Type: application/json' \
+            -d '{"ruta":"/clientes/mantener-activo","referente":"","dispositivo":"otro"}')
+          echo "Supabase respondió $estado"
+          # 204 = la base respondió. Otro código: el proyecto puede estar pausado.
+          test "$estado" = "204"
