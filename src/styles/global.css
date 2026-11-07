@@ -1560,10 +1560,12 @@ h3 {
   column-gap: 10px;
 }
 
-/* Botón al final del álbum para pasar al proyecto siguiente. */
+/* Botones al final del álbum para pasar al proyecto anterior o al siguiente. */
 .siguiente-album {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 32px;
 }
 
@@ -1579,6 +1581,24 @@ h3 {
   flex-direction: column;
   align-items: flex-end;
   gap: 2px;
+}
+
+.siguiente-album .siguiente-album__ant {
+  padding: 14px 28px 14px 22px;
+  text-align: left;
+}
+
+.siguiente-album__ant .siguiente-album__texto {
+  align-items: flex-start;
+}
+
+.siguiente-album__sig {
+  margin-left: auto;
+}
+
+.siguiente-album__flecha-izq {
+  display: inline-flex;
+  transform: scaleX(-1);
 }
 
 .siguiente-album__ante {
