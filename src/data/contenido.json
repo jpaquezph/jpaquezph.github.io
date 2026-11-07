@@ -1,0 +1,326 @@
+{
+  "portada": {
+    "hero": {
+      "src": "banner-principal.webp",
+      "thumb": "banner-principal-m.webp",
+      "w": 2400,
+      "h": 1350
+    },
+    "heroFocoCelular": "80% 22%",
+    "sobreMi": {
+      "src": "sobre-mi.webp",
+      "thumb": "sobre-mi-m.webp",
+      "w": 1200,
+      "h": 1600
+    }
+  },
+  "destacado": {
+    "categoria": "eventos",
+    "album": "streetcar-meet-3ra-edicion",
+    "titulo": "StreetCar Meet 3ra edición",
+    "texto": "Encuentro de autos en Obras Sanitarias, Granadero Baigorria.",
+    "fotos": [
+      8,
+      44,
+      34,
+      10,
+      53,
+      14
+    ]
+  },
+  "categorias": {
+    "infantiles": {
+      "nombre": "Infantiles",
+      "icono": "corazon",
+      "texto": "Eventos y sesiones de chicos.",
+      "portadas": [],
+      "coverflow": [
+        {
+          "src": "coverflow-infantiles.webp",
+          "thumb": "coverflow-infantiles-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(120 120 56)"
+        },
+        {
+          "src": "coverflow-infantiles-02.webp",
+          "thumb": "coverflow-infantiles-02-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(72 72 72)"
+        }
+      ],
+      "tarjeta": {
+        "src": "tarjeta-infantiles.webp",
+        "thumb": "tarjeta-infantiles-m.webp",
+        "w": 1200,
+        "h": 1600,
+        "color": "rgb(72 72 8)"
+      },
+      "pase": {
+        "src": "pase-infantiles.webp",
+        "thumb": "pase-infantiles-m.webp",
+        "w": 1180,
+        "h": 320,
+        "color": "rgb(72 72 56)"
+      }
+    },
+    "sesiones": {
+      "icono": "retrato",
+      "texto": "Sesiones de retrato en exteriores.",
+      "portadas": [
+        "abi-sesion-exterior:6",
+        "abi-sesion-exterior:3"
+      ],
+      "coverflow": [
+        {
+          "src": "coverflow-sesiones.webp",
+          "thumb": "coverflow-sesiones-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(24 40 24)"
+        },
+        {
+          "src": "coverflow-sesiones-02.webp",
+          "thumb": "coverflow-sesiones-02-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(136 88 56)"
+        }
+      ],
+      "tarjeta": {
+        "src": "tarjeta-sesiones.webp",
+        "thumb": "tarjeta-sesiones-m.webp",
+        "w": 1200,
+        "h": 1600,
+        "color": "rgb(8 8 8)"
+      },
+      "pase": {
+        "src": "pase-sesiones.webp",
+        "thumb": "pase-sesiones-m.webp",
+        "w": 1180,
+        "h": 320,
+        "color": "rgb(216 216 216)"
+      }
+    },
+    "eventos": {
+      "icono": "copa",
+      "texto": "Cobertura de eventos.",
+      "portadas": [
+        "sagrado-corazon:10",
+        "sagrado-corazon:3"
+      ],
+      "coverflow": [
+        {
+          "src": "coverflow-eventos.webp",
+          "thumb": "coverflow-eventos-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(8 8 8)"
+        },
+        {
+          "src": "coverflow-eventos-02.webp",
+          "thumb": "coverflow-eventos-02-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(216 168 136)"
+        }
+      ],
+      "tarjeta": {
+        "src": "tarjeta-eventos.webp",
+        "thumb": "tarjeta-eventos-m.webp",
+        "w": 1200,
+        "h": 1600,
+        "color": "rgb(8 8 8)"
+      },
+      "pase": {
+        "src": "pase-eventos.webp",
+        "thumb": "pase-eventos-m.webp",
+        "w": 1180,
+        "h": 320,
+        "color": "rgb(8 8 8)"
+      }
+    },
+    "recitales": {
+      "nombre": "Música",
+      "icono": "musica",
+      "texto": "Música en vivo, bandas y festivales.",
+      "portadas": [
+        "destino-casual-teatro-vorterix:4",
+        "ateneo-cultural:12"
+      ],
+      "coverflow": [
+        {
+          "src": "coverflow-musica.webp",
+          "thumb": "coverflow-musica-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(40 8 40)"
+        },
+        {
+          "src": "coverflow-musica-02.webp",
+          "thumb": "coverflow-musica-02-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(8 8 8)"
+        }
+      ],
+      "tarjeta": {
+        "src": "tarjeta-musica.webp",
+        "thumb": "tarjeta-musica-m.webp",
+        "w": 1200,
+        "h": 1600,
+        "color": "rgb(40 8 40)"
+      },
+      "pase": {
+        "src": "pase-musica.webp",
+        "thumb": "pase-musica-m.webp",
+        "w": 1180,
+        "h": 320,
+        "color": "rgb(56 40 24)"
+      },
+      "banners": {
+        "ateneo-cultural": [
+          {
+            "src": "pase-musica-02.webp",
+            "thumb": "pase-musica-02-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(24 8 40)"
+          },
+          {
+            "src": "pase-musica-08.webp",
+            "thumb": "pase-musica-08-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(24 8 24)"
+          }
+        ],
+        "destino-casual-teatro-vorterix": [
+          {
+            "src": "pase-musica-03.webp",
+            "thumb": "pase-musica-03-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(8 8 8)"
+          },
+          {
+            "src": "pase-musica-04.webp",
+            "thumb": "pase-musica-04-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(8 8 200)"
+          },
+          {
+            "src": "pase-musica-05.webp",
+            "thumb": "pase-musica-05-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(24 8 8)"
+          }
+        ],
+        "ensayo-fralumalu": [
+          {
+            "src": "pase-musica-09.webp",
+            "thumb": "pase-musica-09-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(24 40 56)"
+          }
+        ]
+      },
+      "paseSueltas": [
+        {
+          "src": "pase-musica-06.webp",
+          "thumb": "pase-musica-06-m.webp",
+          "w": 1180,
+          "h": 320,
+          "color": "rgb(40 24 24)"
+        },
+        {
+          "src": "pase-musica-07.webp",
+          "thumb": "pase-musica-07-m.webp",
+          "w": 1180,
+          "h": 320,
+          "color": "rgb(8 8 24)"
+        }
+      ]
+    },
+    "productos": {
+      "nombre": "Productos",
+      "icono": "caja",
+      "texto": "Fotografía de productos y catálogos.",
+      "portadas": [],
+      "coverflow": [
+        {
+          "src": "coverflow-productos.webp",
+          "thumb": "coverflow-productos-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(104 104 104)"
+        },
+        {
+          "src": "coverflow-productos-02.webp",
+          "thumb": "coverflow-productos-02-m.webp",
+          "w": 1500,
+          "h": 1000,
+          "color": "rgb(120 120 120)"
+        }
+      ],
+      "tarjeta": {
+        "src": "tarjeta-productos.webp",
+        "thumb": "tarjeta-productos-m.webp",
+        "w": 1200,
+        "h": 1600,
+        "color": "rgb(168 168 168)"
+      },
+      "banners": {
+        "bijouterie": [
+          {
+            "src": "pase-productos-01.webp",
+            "thumb": "pase-productos-01-m.webp",
+            "w": 1180,
+            "h": 320,
+            "color": "rgb(216 216 216)"
+          }
+        ]
+      }
+    }
+  },
+  "albumes": {
+    "recitales/destino-casual-teatro-vorterix": {
+      "titulo": "Destino Casual",
+      "descripcion": "Teatro Vorterix."
+    },
+    "recitales/ateneo-cultural": {
+      "titulo": "Festival Amiguero",
+      "descripcion": "Ateneo Cultural Néstor Kirchner.",
+      "tapa": 2
+    },
+    "eventos/sagrado-corazon": {
+      "titulo": "Graduación Sagrado Corazón",
+      "descripcion": "Salón Metropolitano."
+    },
+    "eventos/streetcar-meet-3ra-edicion": {
+      "titulo": "StreetCar Meet 3ra edición",
+      "descripcion": "Obras Sanitarias, Granadero Baigorria."
+    },
+    "infantiles/sesion-facu": {
+      "titulo": "Sesión pre bautismo Facu",
+      "descripcion": "Parque Independencia, Rosario."
+    },
+    "productos/bijouterie": {
+      "titulo": "Bijouterie",
+      "descripcion": "",
+      "tapa": 9
+    },
+    "sesiones/hermanos-solis": {
+      "titulo": "Hermanos Solís",
+      "descripcion": "Rosedal del Parque Independencia, Rosario."
+    },
+    "sesiones/abi-sesion-exterior": {
+      "titulo": "Abi · 15 años",
+      "descripcion": "Parque Villarino, Zavalla, y La Florida, Rosario."
+    }
+  }
+}

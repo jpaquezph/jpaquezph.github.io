@@ -1,3 +1,5 @@
+import contenido from './contenido.json';
+
 // Textos y datos del sitio. Contacto, presentación y recorrido salen del portfolio
 // personal; precios y testimonios siguen siendo de relleno.
 
@@ -48,120 +50,37 @@ export const menu = [
   { texto: 'Contacto', ruta: 'contacto/' },
 ];
 
+// Fotos y textos que se cambian desde el panel de administración (pestañas "Fotos
+// de la web" y "Álbumes"): viven en contenido.json para que el panel pueda editarlos.
+// Las fotos son archivos de public/ (versión grande y chica).
+export type FotoPropia = { src: string; thumb: string; w: number; h: number; color?: string };
+
 // Datos extra por categoría, según el nombre de la carpeta (en slug).
 // `portadas` son referencias "album:numero-de-foto"; la primera es la principal.
 // `coverflow` (opcional) son las fotos del carrusel de categorías de la portada, una
-// por vuelta: archivos propios en public/ (versión grande y chica) o referencias
-// "album:numero-de-foto".
+// por vuelta: archivos propios o referencias "album:numero-de-foto".
 // `nombre` reemplaza al de la carpeta; hace falta en las categorías sin carpeta de fotos.
-type FotoPropia = { src: string; thumb: string; w: number; h: number; color: string };
-const propia = (archivo: string, color: string, w = 1500, h = 1000): FotoPropia => ({
-  src: `${archivo}.webp`,
-  thumb: `${archivo}-m.webp`,
-  w,
-  h,
-  color,
-});
-export const categoriasMeta: Record<
-  string,
-  {
-    nombre?: string;
-    icono: string;
-    texto: string;
-    portadas: string[];
-    coverflow?: (FotoPropia | string)[];
-    /** Tarjeta de la categoría en la página Portfolio (3:4). */
-    tarjeta?: FotoPropia;
-    /** Primera foto del pase de la categoría (1180 x 320). */
-    pase?: FotoPropia;
-    /** Fotos del pase por proyecto: { "slug-del-album": [fotos] }. */
-    banners?: Record<string, FotoPropia[]>;
-    /** Fotos del pase que no son de un proyecto publicado; llevan a los proyectos. */
-    paseSueltas?: FotoPropia[];
-  }
-> = {
-  infantiles: {
-    nombre: 'Infantiles',
-    icono: 'corazon',
-    texto: 'Eventos y sesiones de chicos.',
-    portadas: [],
-    coverflow: [propia('coverflow-infantiles', 'rgb(120 120 56)'), propia('coverflow-infantiles-02', 'rgb(72 72 72)')],
-    tarjeta: propia('tarjeta-infantiles', 'rgb(72 72 8)', 1200, 1600),
-    pase: propia('pase-infantiles', 'rgb(72 72 56)', 1180, 320),
-  },
-  sesiones: {
-    icono: 'retrato',
-    texto: 'Sesiones de retrato en exteriores.',
-    portadas: ['abi-sesion-exterior:6', 'abi-sesion-exterior:3'],
-    coverflow: [propia('coverflow-sesiones', 'rgb(24 40 24)'), propia('coverflow-sesiones-02', 'rgb(136 88 56)')],
-    tarjeta: propia('tarjeta-sesiones', 'rgb(8 8 8)', 1200, 1600),
-    pase: propia('pase-sesiones', 'rgb(216 216 216)', 1180, 320),
-  },
-  eventos: {
-    icono: 'copa',
-    texto: 'Cobertura de eventos.',
-    portadas: ['sagrado-corazon:10', 'sagrado-corazon:3'],
-    coverflow: [propia('coverflow-eventos', 'rgb(8 8 8)'), propia('coverflow-eventos-02', 'rgb(216 168 136)')],
-    tarjeta: propia('tarjeta-eventos', 'rgb(8 8 8)', 1200, 1600),
-    pase: propia('pase-eventos', 'rgb(8 8 8)', 1180, 320),
-  },
-  recitales: {
-    nombre: 'Música',
-    icono: 'musica',
-    texto: 'Música en vivo, bandas y festivales.',
-    portadas: ['destino-casual-teatro-vorterix:4', 'ateneo-cultural:12'],
-    coverflow: [propia('coverflow-musica', 'rgb(40 8 40)'), propia('coverflow-musica-02', 'rgb(8 8 8)')],
-    tarjeta: propia('tarjeta-musica', 'rgb(40 8 40)', 1200, 1600),
-    pase: propia('pase-musica', 'rgb(56 40 24)', 1180, 320),
-    banners: {
-      'ateneo-cultural': [
-        propia('pase-musica-02', 'rgb(24 8 40)', 1180, 320),
-        propia('pase-musica-08', 'rgb(24 8 24)', 1180, 320),
-      ],
-      'destino-casual-teatro-vorterix': [
-        propia('pase-musica-03', 'rgb(8 8 8)', 1180, 320),
-        propia('pase-musica-04', 'rgb(8 8 200)', 1180, 320),
-        propia('pase-musica-05', 'rgb(24 8 8)', 1180, 320),
-      ],
-      'ensayo-fralumalu': [propia('pase-musica-09', 'rgb(24 40 56)', 1180, 320)],
-    },
-    paseSueltas: [propia('pase-musica-06', 'rgb(40 24 24)', 1180, 320), propia('pase-musica-07', 'rgb(8 8 24)', 1180, 320)],
-  },
-  productos: {
-    nombre: 'Productos',
-    icono: 'caja',
-    texto: 'Fotografía de productos y catálogos.',
-    portadas: [],
-    coverflow: [propia('coverflow-productos', 'rgb(104 104 104)'), propia('coverflow-productos-02', 'rgb(120 120 120)')],
-    tarjeta: propia('tarjeta-productos', 'rgb(168 168 168)', 1200, 1600),
-    banners: {
-      bijouterie: [propia('pase-productos-01', 'rgb(216 216 216)', 1180, 320)],
-    },
-  },
-};
+export interface MetaCategoria {
+  nombre?: string;
+  icono: string;
+  texto: string;
+  portadas: string[];
+  coverflow?: (FotoPropia | string)[];
+  /** Tarjeta de la categoría en la página Portfolio (3:4). */
+  tarjeta?: FotoPropia;
+  /** Primera foto del pase de la categoría (1180 x 320). */
+  pase?: FotoPropia;
+  /** Fotos del pase por proyecto: { "slug-del-album": [fotos] }. */
+  banners?: Record<string, FotoPropia[]>;
+  /** Fotos del pase que no son de un proyecto publicado; llevan a los proyectos. */
+  paseSueltas?: FotoPropia[];
+}
+export const categoriasMeta = contenido.categorias as Record<string, MetaCategoria>;
 
 // Nombre y bajada con que se muestra cada proyecto, por "categoria/carpeta" (en slug).
 // Los que no figuran acá se muestran con el nombre de su carpeta.
 // `tapa` (opcional): número de foto del álbum que va en su tarjeta; si no está, la primera.
-export const albumesMeta: Record<string, { titulo: string; descripcion: string; tapa?: number }> = {
-  'recitales/destino-casual-teatro-vorterix': { titulo: 'Destino Casual', descripcion: 'Teatro Vorterix.' },
-  'recitales/ateneo-cultural': { titulo: 'Festival Amiguero', descripcion: 'Ateneo Cultural Néstor Kirchner.', tapa: 2 },
-  'eventos/sagrado-corazon': { titulo: 'Graduación Sagrado Corazón', descripcion: 'Salón Metropolitano.' },
-  'eventos/streetcar-meet-3ra-edicion': {
-    titulo: 'StreetCar Meet 3ra edición',
-    descripcion: 'Obras Sanitarias, Granadero Baigorria.',
-  },
-  'infantiles/sesion-facu': {
-    titulo: 'Sesión pre bautismo Facu',
-    descripcion: 'Parque Independencia, Rosario.',
-  },
-  'productos/bijouterie': { titulo: 'Bijouterie', descripcion: '', tapa: 9 },
-  'sesiones/hermanos-solis': { titulo: 'Hermanos Solís', descripcion: 'Rosedal del Parque Independencia, Rosario.' },
-  'sesiones/abi-sesion-exterior': {
-    titulo: 'Abi · 15 años',
-    descripcion: 'Parque Villarino, Zavalla, y La Florida, Rosario.',
-  },
-};
+export const albumesMeta = contenido.albumes as Record<string, { titulo: string; descripcion: string; tapa?: number }>;
 
 export const sobreMi = {
   // Bloque de la página principal.
@@ -220,23 +139,21 @@ export const sobreMi = {
   ],
 };
 
-export const portada = {
-  // Banner principal: archivo propio en public/ (versión grande y chica).
-  hero: { src: 'banner-principal.webp', thumb: 'banner-principal-m.webp', w: 2400, h: 1350 },
-  // En celular la portada se recorta en vertical: qué punto de la foto queda a la
-  // vista (horizontal vertical). 50% es el centro; más alto, más a la derecha.
-  heroFocoCelular: '80% 22%',
-  // Foto propia (no sale de las carpetas de proyectos): public/sobre-mi.webp y
-  // su versión chica public/sobre-mi-m.webp.
-  sobreMi: { src: 'sobre-mi.webp', thumb: 'sobre-mi-m.webp', w: 1200, h: 1600 },
+// Banner principal (`hero`) y foto del bloque Sobre mí. `heroFocoCelular`: en celular la
+// portada se recorta en vertical; qué punto de la foto queda a la vista (50% es el centro).
+export const portada = contenido.portada as {
+  hero: FotoPropia;
+  heroFocoCelular: string;
+  sobreMi: FotoPropia;
 };
 
-export const destacado = {
-  categoria: 'eventos',
-  album: 'streetcar-meet-3ra-edicion',
-  titulo: 'StreetCar Meet 3ra edición',
-  texto: 'Encuentro de autos en Obras Sanitarias, Granadero Baigorria.',
-  fotos: [8, 44, 34, 10, 53, 14],
+// Trabajo destacado de la portada: álbum y números de sus fotos.
+export const destacado = contenido.destacado as {
+  categoria: string;
+  album: string;
+  titulo: string;
+  texto: string;
+  fotos: number[];
 };
 
 export const cualidades = [
