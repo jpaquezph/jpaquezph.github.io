@@ -1,9 +1,10 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import Galeria from '../../../components/Galeria.astro';
+import Icon from '../../../components/Icon.astro';
 import Llamado from '../../../components/Llamado.astro';
 import Portada from '../../../components/Portada.astro';
-import { categorias, type Album, type Categoria } from '../../../lib/galeria';
+import { categorias, urlAlbum, type Album, type Categoria } from '../../../lib/galeria';
 import { url } from '../../../lib/rutas';
 
 export function getStaticPaths() {
@@ -17,6 +18,12 @@ interface Props {
   album: Album;
 }
 const { categoria, album } = Astro.props;
+
+// Siguiente proyecto: el que sigue en la categoría; después del último, el primero
+// de la categoría siguiente, y del último de todos se vuelve al primero.
+const todos = categorias.flatMap((c) => c.albums.map((a) => ({ categoria: c, album: a })));
+const actual = todos.findIndex((t) => t.categoria.slug === categoria.slug && t.album.slug === album.slug);
+const siguiente = todos.length > 1 ? todos[(actual + 1) % todos.length] : undefined;
 ---
 
 <Base titulo={`${album.nombre} · ${categoria.nombre}`} activo="portfolio/">
@@ -33,6 +40,21 @@ const { categoria, album } = Astro.props;
   <section class="seccion">
     <div class="contenedor">
       <Galeria fotos={album.fotos} nombre={album.nombre} />
+      {
+        siguiente && (
+          <nav class="siguiente-album" aria-label="Siguiente proyecto">
+            <a class="btn" href={urlAlbum(siguiente.categoria, siguiente.album)}>
+              <span class="siguiente-album__texto">
+                <span class="siguiente-album__ante">
+                  {siguiente.categoria.slug === categoria.slug ? 'Siguiente proyecto' : `Siguiente · ${siguiente.categoria.nombre}`}
+                </span>
+                {siguiente.album.nombre}
+              </span>
+              <Icon nombre="flecha" tam={18} />
+            </a>
+          </nav>
+        )
+      }
     </div>
   </section>
   <Llamado />

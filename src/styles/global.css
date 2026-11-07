@@ -1560,6 +1560,32 @@ h3 {
   column-gap: 10px;
 }
 
+/* Botón al final del álbum para pasar al proyecto siguiente. */
+.siguiente-album {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.siguiente-album .btn {
+  gap: 16px;
+  padding: 14px 22px 14px 28px;
+  font-size: 12px;
+  text-align: right;
+}
+
+.siguiente-album__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.siguiente-album__ante {
+  font-size: 9px;
+  opacity: 0.75;
+}
+
 .galeria button {
   display: block;
   width: 100%;
