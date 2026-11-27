@@ -341,7 +341,8 @@
     },
     "eventos/sofia-15-anos": {
       "titulo": "Sofia 15 años",
-      "descripcion": "Candela fiestas"
+      "descripcion": "Candela fiestas",
+      "tapa": 29
     }
   }
 }
