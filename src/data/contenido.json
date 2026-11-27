@@ -323,6 +323,10 @@
     "sesiones/abi-sesion-exterior": {
       "titulo": "Abi · 15 años",
       "descripcion": "Parque Villarino, Zavalla, y La Florida, Rosario."
+    },
+    "eventos/taller-de-velas-navidenas-henko-espacio-creativo": {
+      "titulo": "Taller de Velas navideñas - Henko espacio creativo",
+      "descripcion": ""
     }
   }
 }
