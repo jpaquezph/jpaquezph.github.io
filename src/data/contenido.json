@@ -326,7 +326,8 @@
     },
     "eventos/taller-de-velas-navidenas-henko-espacio-creativo": {
       "titulo": "Taller de Velas navideñas - Henko espacio creativo",
-      "descripcion": ""
+      "descripcion": "",
+      "tapa": 2
     }
   }
 }
