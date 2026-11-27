@@ -1455,6 +1455,189 @@
             }
           ],
           "banners": []
+        },
+        {
+          "slug": "tu-vuelo-muestra-de-tela-anual",
+          "nombre": "Tu vuelo - Muestra de tela anual",
+          "total": 25,
+          "fotos": [
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/001-mwya5t0pqbs0.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/001-mwya5t0pqbs0-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(78 35 91)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/002-mwya5tfii6zy.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/002-mwya5tfii6zy-m.webp",
+              "w": 2000,
+              "h": 1333,
+              "color": "rgb(121 55 73)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/003-mwya5ts1jh6f.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/003-mwya5ts1jh6f-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(90 23 76)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/004-mwya5u35nl1i.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/004-mwya5u35nl1i-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(64 28 80)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/005-mwya5uepxdiw.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/005-mwya5uepxdiw-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(55 18 62)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/006-mwya5uqa1rwc.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/006-mwya5uqa1rwc-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(55 18 69)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/007-mwya5v4naj1e.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/007-mwya5v4naj1e-m.webp",
+              "w": 2000,
+              "h": 1333,
+              "color": "rgb(95 32 81)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/008-mwya5vhlzmqy.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/008-mwya5vhlzmqy-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(45 13 19)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/009-mwya5vv1gffa.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/009-mwya5vv1gffa-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(90 68 120)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/010-mwya5w7zyrdw.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/010-mwya5w7zyrdw-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(145 117 182)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/011-mwya5wl1y8o8.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/011-mwya5wl1y8o8-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(103 80 124)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/012-mwya5wxgqbbc.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/012-mwya5wxgqbbc-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(108 96 159)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/013-mwya5xawjafx.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/013-mwya5xawjafx-m.webp",
+              "w": 2000,
+              "h": 1333,
+              "color": "rgb(178 156 181)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/014-mwya5xp8vd7c.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/014-mwya5xp8vd7c-m.webp",
+              "w": 2000,
+              "h": 1333,
+              "color": "rgb(163 118 140)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/015-mwya5y1pzm0w.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/015-mwya5y1pzm0w-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(131 137 181)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/016-mwya5yfm5pj7.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/016-mwya5yfm5pj7-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(99 93 123)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/017-mwya5yt1yu5p.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/017-mwya5yt1yu5p-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(128 85 84)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/018-mwya5z7ely7d.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/018-mwya5z7ely7d-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(35 50 90)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/019-mwya5zjwjw72.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/019-mwya5zjwjw72-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(69 69 69)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/020-mwya5zwe333f.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/020-mwya5zwe333f-m.webp",
+              "w": 1334,
+              "h": 2000,
+              "color": "rgb(91 71 98)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/021-mwya607z5jon.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/021-mwya607z5jon-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(44 61 104)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/022-mwya60kxonj1.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/022-mwya60kxonj1-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(98 69 79)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/023-mwya60xwq8jv.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/023-mwya60xwq8jv-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(91 58 56)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/024-mwya619f07gd.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/024-mwya619f07gd-m.webp",
+              "w": 2000,
+              "h": 1125,
+              "color": "rgb(88 54 53)"
+            },
+            {
+              "src": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/025-mwya61k3fhl4.webp",
+              "thumb": "fotos/eventos/tu-vuelo-muestra-de-tela-anual/025-mwya61k3fhl4-m.webp",
+              "w": 2000,
+              "h": 1125,
+              "color": "rgb(63 36 29)"
+            }
+          ],
+          "banners": []
         }
       ]
     },
