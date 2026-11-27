@@ -347,6 +347,10 @@
     "productos/productos-de-catalogo": {
       "titulo": "Productos de catálogo",
       "descripcion": ""
+    },
+    "infantiles/cumple-1-ano-sara": {
+      "titulo": "Cumple 1 año - Sara",
+      "descripcion": "Umma eventos"
     }
   }
 }
