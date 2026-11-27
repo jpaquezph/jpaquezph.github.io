@@ -343,6 +343,10 @@
       "titulo": "Sofia 15 años",
       "descripcion": "Candela fiestas",
       "tapa": 29
+    },
+    "productos/productos-de-catalogo": {
+      "titulo": "Productos de catálogo",
+      "descripcion": ""
     }
   }
 }

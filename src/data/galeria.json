@@ -4279,6 +4279,77 @@
             }
           ],
           "banners": []
+        },
+        {
+          "slug": "productos-de-catalogo",
+          "nombre": "Productos de catálogo",
+          "total": 9,
+          "fotos": [
+            {
+              "src": "fotos/productos/productos-de-catalogo/001-mwyfwfwktdaa.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/001-mwyfwfwktdaa-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(207 174 196)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/002-mwyfwg9z2vln.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/002-mwyfwg9z2vln-m.webp",
+              "w": 2000,
+              "h": 1333,
+              "color": "rgb(207 199 223)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/003-mwyfwgmxv7p3.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/003-mwyfwgmxv7p3-m.webp",
+              "w": 2000,
+              "h": 1333,
+              "color": "rgb(236 204 212)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/004-mwyfwh0tprh3.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/004-mwyfwh0tprh3-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(231 202 218)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/005-mwyfwhhzqg5e.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/005-mwyfwhhzqg5e-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(240 204 69)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/006-mwyfwhzkm5nh.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/006-mwyfwhzkm5nh-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(197 200 225)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/007-mwyfwihmtosl.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/007-mwyfwihmtosl-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(179 185 208)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/008-mwyfwiwwnx1p.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/008-mwyfwiwwnx1p-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(225 212 196)"
+            },
+            {
+              "src": "fotos/productos/productos-de-catalogo/009-mwyfwjdoo788.webp",
+              "thumb": "fotos/productos/productos-de-catalogo/009-mwyfwjdoo788-m.webp",
+              "w": 1333,
+              "h": 2000,
+              "color": "rgb(212 87 218)"
+            }
+          ],
+          "banners": []
         }
       ]
     }
