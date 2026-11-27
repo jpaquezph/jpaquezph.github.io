@@ -333,6 +333,11 @@
       "titulo": "Tu vuelo - Muestra de tela anual",
       "descripcion": "Teatro Vigil, Rosario",
       "tapa": 10
+    },
+    "recitales/ensayo-fralumalu": {
+      "titulo": "Ensayo Fralumalu",
+      "descripcion": "",
+      "tapa": 13
     }
   }
 }
