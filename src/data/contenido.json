@@ -355,7 +355,8 @@
     },
     "infantiles/cumple-valen-5-anos": {
       "titulo": "Cumple valen - 5 años",
-      "descripcion": "Umma eventos"
+      "descripcion": "Umma eventos",
+      "tapa": 35
     }
   }
 }
